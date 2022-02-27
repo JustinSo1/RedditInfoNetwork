@@ -73,8 +73,14 @@ def make_clickable(val):
 
 if __name__ == "__main__":
     # https://api.pushshift.io/reddit/search/comment/?q=trump&after=4d&before=2d&sort=asc
+    # before = datetime.datetime(year=2020, month=7, day=31).timestamp()
+    # after = datetime.datetime(year=2020, month=1, day=1).timestamp()
+    # print(before, after)
+    print("Starting getting data")
     with open("subreddit_list.txt") as subreddit_list:
         while subreddit := subreddit_list.readline():
+            print(f"Getting data for {subreddit}")
             convert_submission_data_to_csv(subreddit.rstrip(),
-                                           before=datetime.datetime(year=2020, month=7, day=31).timestamp(),
-                                           after=datetime.datetime(year=2020, month=1, day=1).timestamp())
+                                           before=int(datetime.datetime(year=2020, month=7, day=31).timestamp()),
+                                           after=int(datetime.datetime(year=2020, month=1, day=1).timestamp()))
+    print("Finished getting data")
