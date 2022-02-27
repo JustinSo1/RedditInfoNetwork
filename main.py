@@ -10,18 +10,40 @@ def convert_submission_data_to_csv(subreddit, before, after):
     data_type = "submission"  # give me comments, use "submission" to publish something
     sort_type = "score"  # Sort by score (Accepted: "score", "num_comments", "created_utc")
     sort = "desc"  # sort descending
-    size = 500  # number of results to return
+    size = 100  # number of results to return
 
-    # Call the API
-    data = get_pushshift_data(data_type=data_type,
-                              # q=query,
-                              after=after,
-                              before=before,
-                              size=size,
-                              sort_type=sort_type,
-                              sort=sort,
-                              subreddit=subreddit,
-                              ).get("data")
+    query_iteration = 1
+
+    all_results = results = get_pushshift_data(
+        data_type=data_type,
+        # q=query,
+        after=after,
+        before=before,
+        size=size,
+        sort_type=sort_type,
+        sort=sort,
+        subreddit=subreddit,
+        ).get("data")
+    
+    while len(results) != 0:
+        after_new = results[-1]["created_utc"]
+        results = get_pushshift_data(
+            data_type=data_type,
+            # q=query,
+            after=after_new,
+            before=before,
+            size=size,
+            sort_type=sort_type,
+            sort=sort,
+            subreddit=subreddit,
+            ).get("data")
+        
+        all_results.extend(results)
+        query_iteration += 1
+        print("Query iteration: {}".format(query_iteration))
+
+    data = all_results
+
     write_to_json_file(subreddit, data)
     # Select the columns you care about
     headers = ["author", "created_utc", "awarders", "domain", "full_link", "gildings", "id", "is_crosspostable",

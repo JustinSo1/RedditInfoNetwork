@@ -3,3 +3,5 @@ health
 science
 technology
 business
+news
+politics
