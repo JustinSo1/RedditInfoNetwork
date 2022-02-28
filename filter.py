@@ -20,8 +20,8 @@ urls = ["100percentfedup.com", "12minutos.com", "21stcenturywire.com", "24aktuel
 # print(webregex, urls)
 
 subreddits = ["coronavirus", "news", "politics", "ideological", "local", "science", "technology", "health", "business"]
-cvsubreddits = ["coronavirus", "news", "politics", "ideological", "local", "science", "technology", "health", "business" ,"coronavirusus", "covid19positive", "coronavirusuk", "covidvaccinated", "lockdownskepticism", "coronavirusdownunder", "maryland", "nyc", "covidiots", "joebiden", "coronaviruscirclejerk", "bayarea", "collapse", "environment", "florida", "brexit", "politicaldiscussion", "michigan", "medicine", "economics"]
-files = ['./submission_data/business_submissions.json', './submission_data/coronavirus_submissions.json', './submission_data/health_submissions.json', './submission_data/news_submissions.json', './submission_data/politics_submissions.json', './submission_data/science_submissions.json', './submission_data/technology_submissions.json']
+cvsubreddits = ["conspiracy", "POLITIC", "The_Donald", "politics", "Conservative", "EnoughTrumpSpam", "worldpolitics", "PoliticsAll", "ModerationLog", "reddit.com", "conspirated", "todayilearned", "hillaryclinton", "skeptic", "HillaryForPrison", "progressive", "conservatives", "WTF", "atheism", "Liberal"]
+files = ['./submission_data/conspiracy_submissions.json', './submission_data/POLITIC_submissions.json', './submission_data/politics_submissions.json', './submission_data/The_Donald_submissions.json', './submission_data/Conservative_submissions.json', './submission_data/EnoughTrumpSpam_submissions.json', './submission_data/worldpolitics_submissions.json', './submission_data/ModerationLog_submissions.json', './submission_data/hillaryclinton_submissions.json', './submission_data/todayilearned_submissions.json', './submission_data/skeptic_submissions.json', './submission_data/HillaryForPrison_submissions.json', './submission_data/progressive_submissions.json', './submission_data/conservatives_submissions.json', './submission_data/atheism_submissions.json', './submission_data/Liberal_submissions.json']
 
 fdata = []
 for file in files:
