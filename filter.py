@@ -11,7 +11,7 @@ import pandas as pd
 
 subreddits = ["coronavirus", "news", "politics", "ideological", "local", "science", "technology", "health", "business"]
 
-files = ['./comment_data/coronavirus_comments.json']
+files = ['./submission_data/coronavirus_submissions.json']
 
 link_id = []
 all_comments = []
@@ -70,6 +70,7 @@ def get_pushshift_data(data_type, **kwargs):
     base_url = f"https://api.pushshift.io/reddit/search/{data_type}/"
     payload = kwargs
     request = requests.get(base_url, params=payload)
+    print(request.status_code)
     return request.json()
 
 
@@ -84,16 +85,15 @@ for file in files:
   data = json.load(f)
   for i in data:
     # get all link_ids
-    if "link_id" in i:
-      # print("subreddit: {}, link_id: {}".format(i["subreddit"], i["link_id"].split("_", 1)[1]))
-      link_id.append(i["link_id"].split("_", 1)[1])
+    if "id" in i and i["id"] not in link_id:
+      link_id.append(i["id"])
 
 before = int(datetime.datetime(year=2020, month=12, day=31).timestamp())
 after = int(datetime.datetime(year=2020, month=1, day=1).timestamp())
 
 l = 1
 for id in link_id:
-  if l < 11:
+  if l <= 15:
     print("{}: Getting comments for post {}".format(l, id))
     convert_comment_data_to_csv(subreddit="coronavirus",
                                 before=before,
