@@ -38,8 +38,8 @@ if __name__ == "__main__":
           
           
           # create edges and set nodes name=author
+          # add_weighted_edges_from(source = child_author, target = parent_author, weight)
           for index, child_row in child_rows.iterrows():
-            # (source = child_author, target = parent_author, weight)
             child_author = child_row['author']
             parent_author = parent_row['author'].iloc[0]
             print('p_author: {}\nc_author: {}'.format(parent_author, child_author))
@@ -49,10 +49,12 @@ if __name__ == "__main__":
             # else set default weight to 1
             graph.add_weighted_edges_from([(child_author, parent_author, 1)])
 
-
-        nx.draw(graph, node_size=10)
-        plt.savefig("graph.png".format(type), bbox_inches='tight')
-        plt.show()
+          # draw and show graph after adding edges
+          nx.draw(graph, node_size=10)
+          plt.savefig("graph.png".format(type), bbox_inches='tight')
+          plt.show()
+          plt.clf()
+          print('#p_author: {}\n#c_author: {}\n#nodes: {}\n#edges: {}\nEdges: {}\n'.format(1, len(child_rows.index), graph.number_of_nodes(), graph.number_of_edges(), graph.edges.data('weight')))
 
         l+=1
 
