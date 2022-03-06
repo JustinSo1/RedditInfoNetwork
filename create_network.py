@@ -1,6 +1,7 @@
 import os
 import networkx as nx
 import pandas as pd
+import matplotlib.pyplot as plt
 
 if __name__ == "__main__":
     path = os.path.join("comment_data", "coronavirus_all_comments.csv")
@@ -35,16 +36,23 @@ if __name__ == "__main__":
           # print('p_row: {}\nc_rows: {}'.format(parent_row, child_rows))
 
           
-          # check if authors has already interacted with each other - use .has_node(author), change the weight
           
           # create edges and set nodes name=author
           for index, child_row in child_rows.iterrows():
             # (source = child_author, target = parent_author, weight)
             child_author = child_row['author']
-            parent_author = parent_row['author']
+            parent_author = parent_row['author'].iloc[0]
             print('p_author: {}\nc_author: {}'.format(parent_author, child_author))
-            # graph.add_weighted_edges_from([()])
 
+            # TODO: check if authors has already interacted with each other - use .has_node(author), change the weight
+
+            # else set default weight to 1
+            graph.add_weighted_edges_from([(child_author, parent_author, 1)])
+
+
+        nx.draw(graph, node_size=10)
+        plt.savefig("graph.png".format(type), bbox_inches='tight')
+        plt.show()
 
         l+=1
 
