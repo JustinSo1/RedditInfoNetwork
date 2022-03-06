@@ -3,6 +3,11 @@ import requests
 
 def get_data(time_period, data_type, subreddit, **kwargs):
     before, after = time_period.before, time_period.after
+
+    # Quick fix for getting comments since date doesn't matter
+    if not before and not after:
+        return get_pushshift_data(data_type, subreddit=subreddit, **kwargs)
+
     all_results = results = get_pushshift_data(
         before=before,
         after=after,
