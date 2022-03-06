@@ -50,7 +50,7 @@ def convert_submission_data_to_csv(subreddit, before, after):
                "is_original_content", "is_reddit_media_domain", "is_self", "is_video", "locked", "num_comments",
                "num_crossposts", "over_18", "permalink", "pinned", "post_hint", "preview", "retrieved_on", 
                "score", "selftext", "stickied", "subreddit", "subreddit_id", "subreddit_subscribers", 
-               "subreddit_type", "thumbnail", "title", "total_awards_received", "upvote_ratio", "url", ]
+               "subreddit_type", "thumbnail", "title", "total_awards_received", "upvote_ratio", "url"]
 
     df = pd.DataFrame.from_records(data)[headers]
 
@@ -64,6 +64,8 @@ def convert_submission_data_to_csv(subreddit, before, after):
     csv_file_path = os.path.join("submission_data", f"{subreddit}_submissions.csv")
     df.to_csv(csv_file_path, index=False)
 
+
+ # Goal: get all comments from a given submission
 def convert_comment_data_to_csv(subreddit, before, after):
     data_type = "comment"  # give me comments, use "submission" to publish something
     sort_type = "score"  # Sort by score (Accepted: "score", "num_comments", "created_utc")
@@ -148,6 +150,7 @@ def make_clickable(val):
     return '<a href="{}">Link</a>'.format(val, val)
 
 
+# TODO: Get all submissions in given time frame. After get all comments from those submissions
 if __name__ == "__main__":
     # https://api.pushshift.io/reddit/search/comment/?q=trump&after=4d&before=2d&sort=asc
     before = int(datetime.datetime(year=2020, month=12, day=31).timestamp())
@@ -161,6 +164,8 @@ if __name__ == "__main__":
     #                                        before=before,
     #                                        after=after)
     # print("Finished getting post data")
+
+    # Goal: get all comments from a given submission
     print("Start getting comment data")
     with open("subreddit_list.txt") as subreddit_list:
         while subreddit := subreddit_list.readline():
