@@ -9,4 +9,7 @@ if __name__ == "__main__":
     authors_list = df['author'].tolist()
     df = df[['author', 'id', 'link_id', 'parent_id', 'subreddit_id']]
     
+    # delete all rows that have "[deleted]" author
+    df = df[df.author != "[deleted]"]
+
     print(df)
