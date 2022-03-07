@@ -7,7 +7,7 @@ from data_collection_ops.write_data_to_json_file import write_data_to_json_file
 logger = logging.getLogger(__name__)
 
 
-class RedditData:
+class DataCollection:
     def __init__(self, file_path=""):
         logger.info("Hello, world")
         self.file_path = file_path

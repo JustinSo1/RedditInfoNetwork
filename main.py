@@ -1,9 +1,7 @@
 import datetime
 import json
 
-from pmaw import PushshiftAPI
-
-from data_collection import RedditData
+from data_collection import DataCollection
 
 
 def get_post_ids(files):
@@ -30,9 +28,9 @@ def get_comments_from_submission(api, link_IDs, subreddit, **kwargs):
 
 if __name__ == '__main__':
     before = int(datetime.datetime(year=2020, month=12, day=31).timestamp())
-    after = int(datetime.datetime(year=2020, month=1, day=0).timestamp())
+    after = int(datetime.datetime(year=2020, month=1, day=1).timestamp())
     directory = "test_directory"
-    data = RedditData("test_directory")
+    data = DataCollection("test_directory")
 
     headers = ["author", "created_utc", "awarders", "domain", "full_link", "gildings", "id", "is_crosspostable",
                "is_original_content", "is_reddit_media_domain", "is_self", "is_video", "locked", "num_comments",
@@ -48,13 +46,13 @@ if __name__ == '__main__':
     data.write_data_to_csv(submission_list, headers, "submission", "coronavirus")
     # data.write_data_to_json_file(reddit_data, "submission", "coronavirus")
 
-    # files = ['./test_directory/coronavirus_submission.json']
-    # link_IDs = get_post_ids(files)
-    # # print(len(link_IDs))
-    #
-    # all_comments = get_comments_from_submission(api=data, link_IDs=link_IDs, subreddit="coronavirus", sort_type="score",
-    #                                             sort="desc")
-    # headers = ["author", "link_id", "id", "parent_id", "created_utc", "is_submitter", "score", "subreddit",
-    #            "subreddit_id", "body"]
-    #
-    # data.write_data_to_csv(all_comments, headers, "comment", "coronavirus")
+    files = ['./test_directory/coronavirus_submission.json']
+    link_IDs = get_post_ids(files)
+    # print(len(link_IDs))
+
+    all_comments = get_comments_from_submission(api=data, link_IDs=link_IDs, subreddit="coronavirus", sort_type="score",
+                                                sort="desc")
+    headers = ["author", "link_id", "id", "parent_id", "created_utc", "is_submitter", "score", "subreddit",
+               "subreddit_id", "body"]
+
+    data.write_data_to_csv(all_comments, headers, "comment", "coronavirus")
