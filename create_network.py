@@ -22,6 +22,7 @@ if __name__ == "__main__":
 
     # print(df['parent_id'])
     
+    # create edges for comments replying to a comment (parent_id = id)
     l = 1
     for id in df['parent_id']:
       if l <=10:
@@ -35,30 +36,30 @@ if __name__ == "__main__":
           child_rows = df.loc[df['parent_id'] == id]
           # print('p_row: {}\nc_rows: {}'.format(parent_row, child_rows))
 
-          
-          
           # create edges and set nodes name=author
           # add_weighted_edges_from(source = child_author, target = parent_author, weight)
           for index, child_row in child_rows.iterrows():
             child_author = child_row['author']
             parent_author = parent_row['author'].iloc[0]
-            print('p_author: {}\nc_author: {}'.format(parent_author, child_author))
+            # print('p_author: {}\nc_author: {}'.format(parent_author, child_author))
 
-            # TODO: check if authors has already interacted with each other - use .has_node(author), change the weight
-
-            # else set default weight to 1
-            graph.add_weighted_edges_from([(child_author, parent_author, 1)])
+            # check if authors has already interacted with each other - use .has_edge(author), change the weight
+            if graph.has_edge(child_author, parent_author):
+              graph[child_author][parent_author]['weight'] +=1
+            else : # set default weight to 1
+              graph.add_weighted_edges_from([(child_author, parent_author, 1)])
 
           # draw and show graph after adding edges
           nx.draw(graph, node_size=10)
           plt.savefig("graph.png".format(type), bbox_inches='tight')
           plt.show()
-          plt.clf()
-          print('#p_author: {}\n#c_author: {}\n#nodes: {}\n#edges: {}\nEdges: {}\n'.format(1, len(child_rows.index), graph.number_of_nodes(), graph.number_of_edges(), graph.edges.data('weight')))
+          plt.clf() # clear canvas to show most recent graph
 
         l+=1
 
-
+    # TODO: create edges for comments where it is a direct comment on a post (parent_id = link_id)
+    # TODO: analyze the graph and print into file
+    print('#p_author: {}\n#c_author: {}\n#nodes: {}\n#edges: {}\nEdges: {}\n'.format(1, len(child_rows.index), graph.number_of_nodes(), graph.number_of_edges(), graph.edges.data('weight')))
 
     # print(df[df.author == "post_alone_musk"])
 
