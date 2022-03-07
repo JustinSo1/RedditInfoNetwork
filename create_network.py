@@ -57,36 +57,47 @@ def get_df():
 
 def get_graph_analysis():
 
-    # Node degree distribution
-    # The degree is the sum of the edge weights adjacent to the node.
-    # all degrees
-    d = [k for n, k in graph.degree(weight='weight')]
-    plt.hist(d)
-    plt.title("Degree Distribution")
-    plt.xlabel("Degree, k")
-    plt.ylabel("Count, Nk")
-    plt.savefig("graphs/dd_all.png")
-    plt.clf() 
+  get_node_degree_distribution() # Node degree distribution
+  get_weakly_connected_component() # Weakly connected component
 
-    # in degree
-    ind = d = [k for n, k in graph.in_degree(weight='weight')]
-    plt.hist(ind)
-    plt.title("In Degree Distribution")
-    plt.xlabel("In Degree, k")
-    plt.ylabel("Count, Nk")
-    plt.savefig("graphs/dd_in.png")
-    plt.clf() 
+  # print('#p_author: {}\n#c_author: {}\n#nodes: {}\n#edges: {}\nEdges: {}\n'.format(1, len(child_rows.index), graph.number_of_nodes(), graph.number_of_edges(), graph.edges.data('weight')))
 
-    # out degree
-    outd = [k for n, k in graph.out_degree(weight='weight')]
-    plt.hist(outd)
-    plt.title("Out Degree Distribution")
-    plt.xlabel("Out Degree, k")
-    plt.ylabel("Count, Nk")
-    plt.savefig("graphs/dd_out.png")
-    plt.clf() 
+def create_graph_analysis(graph_values, title, xlabel, ylabel, file_name):
+  plt.hist(graph_values)
+  plt.title(title)
+  plt.xlabel(xlabel)
+  plt.ylabel(ylabel)
+  plt.savefig(file_name)
+  plt.clf() 
 
-    # print('#p_author: {}\n#c_author: {}\n#nodes: {}\n#edges: {}\nEdges: {}\n'.format(1, len(child_rows.index), graph.number_of_nodes(), graph.number_of_edges(), graph.edges.data('weight')))
+def get_node_degree_distribution():
+  # The degree is the sum of the edge weights adjacent to the node.
+  # TODO: change to plot log-log scatter plot
+  # all degrees
+  d = [k for n, k in graph.degree(weight='weight')]
+  # x-axis
+  x = []
+  for v in d:
+    if v not in x:
+      x.append(v)
+  # y-axis
+  y = [d.count(v) for v in x]
+  print(x, y)
+
+  create_graph_analysis(d, "Degree Distribution", "Degree, k", "Count, Nk", "graphs/dd_all.png")
+
+  # in degree
+  ind = d = [k for n, k in graph.in_degree(weight='weight')]
+  create_graph_analysis(ind, "In Degree Distribution", "In Degree, k", "Count, Nk", "graphs/dd_in.png")
+
+  # out degree
+  outd = [k for n, k in graph.out_degree(weight='weight')]
+  create_graph_analysis(outd, "Out Degree Distribution", "Out Degree, k", "Count, Nk", "graphs/dd_out.png")
+
+def get_weakly_connected_component():
+  
+  create_graph_analysis("outd", "Out Degree Distribution", "Out Degree, k", "Count, Nk", "graphs/dd_out.png")
+  return {}
 
 if __name__ == "__main__":
 
