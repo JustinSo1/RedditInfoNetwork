@@ -19,6 +19,7 @@ def set_interaction(id, parent_id, coc_df, post_df, has_interaction):
   else:
     # node has no data for parent_id = id, hence don't create edge
     has_interaction = False
+    parent_row, child_rows = None, None
 
   return parent_row, child_rows, has_interaction
 
@@ -27,17 +28,20 @@ def create_edges(parent_row, child_rows):
   for index, child_row in child_rows.iterrows():
     child_author = child_row['author']
     parent_author = parent_row['author'].iloc[0]
+    # If its a self loop, skip creating an edge to itself
+    if parent_author == child_author:
+      continue
     # check if authors has already interacted with each other - use .has_edge(author), change the weight
-    if graph.has_edge(child_author, parent_author):
-      graph[child_author][parent_author]['weight'] +=1
-    else : # set default weight to 1
+    elif graph.has_edge(child_author, parent_author):
+      graph[child_author][parent_author]['weight'] += 1
+    else:  # set default weight to 1
       graph.add_weighted_edges_from([(child_author, parent_author, 1)])
 
 def create_graph():
   nx.draw(graph, node_size=10)
   plt.savefig("graphs/graph.png".format(type), bbox_inches='tight')
   plt.show()
-  plt.clf() # clear canvas to show most recent graph
+  plt.clf()  # clear canvas to show most recent graph
 
 def filter_coc_df(coc_df):
   # delete all rows that have "[deleted]" and "AutoModerator" author
@@ -57,11 +61,8 @@ def get_df():
   return coc_df, post_df
 
 def get_graph_analysis():
-
-  get_node_degree_distribution() # Node degree distribution
-  get_weakly_connected_component() # Weakly connected component
-
-  # print('#p_author: {}\n#c_author: {}\n#nodes: {}\n#edges: {}\nEdges: {}\n'.format(1, len(child_rows.index), graph.number_of_nodes(), graph.number_of_edges(), graph.edges.data('weight')))
+  get_node_degree_distribution()  # Node degree distribution
+  get_weakly_connected_component()  # Weakly connected component
 
 def create_graph_analysis(graph_values, title, xlabel, ylabel, file_name):
   plt.hist(graph_values)
@@ -69,7 +70,7 @@ def create_graph_analysis(graph_values, title, xlabel, ylabel, file_name):
   plt.xlabel(xlabel)
   plt.ylabel(ylabel)
   plt.savefig(file_name)
-  plt.clf() 
+  plt.clf()
 
 def get_node_degree_distribution():
   # The degree is the sum of the edge weights adjacent to the node.
@@ -79,51 +80,52 @@ def get_node_degree_distribution():
   # x-axis
   x = []
   for v in d:
-    if v not in x:
-      x.append(v)
+      if v not in x:
+          x.append(v)
   # y-axis
   y = [d.count(v) for v in x]
   print(x, y)
 
-  create_graph_analysis(d, "Degree Distribution", "Degree, k", "Count, Nk", "graphs/dd_all.png")
+  create_graph_analysis(d, "Degree Distribution",
+                        "Degree, k", "Count, Nk", "graphs/dd_all.png")
 
   # in degree
   ind = d = [k for n, k in graph.in_degree(weight='weight')]
-  create_graph_analysis(ind, "In Degree Distribution", "In Degree, k", "Count, Nk", "graphs/dd_in.png")
+  create_graph_analysis(ind, "In Degree Distribution",
+                        "In Degree, k", "Count, Nk", "graphs/dd_in.png")
 
   # out degree
   outd = [k for n, k in graph.out_degree(weight='weight')]
-  create_graph_analysis(outd, "Out Degree Distribution", "Out Degree, k", "Count, Nk", "graphs/dd_out.png")
+  create_graph_analysis(outd, "Out Degree Distribution",
+                        "Out Degree, k", "Count, Nk", "graphs/dd_out.png")
 
 def get_weakly_connected_component():
-  
-  create_graph_analysis("outd", "Out Degree Distribution", "Out Degree, k", "Count, Nk", "graphs/dd_out.png")
-  return {}
+  create_graph_analysis("outd", "Out Degree Distribution",
+                        "Out Degree, k", "Count, Nk", "graphs/dd_out.png")
 
 if __name__ == "__main__":
+  # get 'Comment On Comment Dataframe' and 'Post Dataframe'
+  coc_df, post_df = get_df()
+  authors_list = coc_df['author'].tolist()
 
-    # get 'Comment On Comment Dataframe' and 'Post Dataframe' 
-    coc_df, post_df = get_df()
-    authors_list = coc_df['author'].tolist()
+  filter_coc_df(coc_df)
+  graph = nx.DiGraph()
 
-    filter_coc_df(coc_df)
-    graph = nx.DiGraph()
-    
-    l = 1
-    for id in coc_df['parent_id']:
-      if l <= 10:
-        parent_id = id.split('_', 1)[1]
-        has_interaction = True
-        parent_row, child_rows = set_interaction(id, parent_id, coc_df, post_df, has_interaction)
+  # l = 1
+  for id in coc_df['parent_id']:
+    #   if l <= 10:
+    parent_id = id.split('_', 1)[1]
+    has_interaction = True
+    parent_row, child_rows, has_interaction = set_interaction(
+      id, parent_id, coc_df, post_df, has_interaction)
 
-        if has_interaction:
-          # create edges and set nodes name=author
-          create_edges(parent_row, child_rows)
+    if has_interaction:
+      # create edges and set nodes name=author
+      create_edges(parent_row, child_rows)
+    # l += 1
 
-        l += 1
-    
-    # draw and show graph after adding edges
-    create_graph()
+  # draw and show graph after adding edges
+  create_graph()
 
-    # TODO: analyze the graph and print into file
-    get_graph_analysis()
+  # TODO: analyze the graph and print into file
+  get_graph_analysis()
