@@ -47,13 +47,13 @@ def create_graph():
 
 def filter_coc_df(coc_df):
   # delete all rows that have "[deleted]" and "AutoModerator" author
-  coc_df = coc_df[coc_df.author != "[deleted]"]
-  coc_df = coc_df[coc_df.author != "AutoModerator"]
+  coc_df = coc_df[~coc_df.author.isin(['[deleted]', 'AutoModerator'])]
   coc_df = coc_df.reset_index(drop=True)
+  return coc_df
 
 def get_df():
-  path = os.path.join("comment_data", "coronavirus_all_comments.csv")
-  coc_df = pd.read_csv(path)
+  coc_path = os.path.join("comment_data", "coronavirus_all_comments.csv")
+  coc_df = pd.read_csv(coc_path)
   coc_df = coc_df[['author', 'id', 'link_id', 'parent_id', 'subreddit_id']]
 
   post_path = os.path.join("submission_data", "coronavirus_submissions.csv")
@@ -67,7 +67,7 @@ if __name__ == "__main__":
   coc_df, post_df = get_df()
   authors_list = coc_df['author'].tolist()
 
-  filter_coc_df(coc_df)
+  coc_df = filter_coc_df(coc_df)
   graph = nx.DiGraph()
   
   # l = 1
@@ -86,7 +86,8 @@ if __name__ == "__main__":
       # l += 1
   print("Edges created!")
   
-  # draw and show graph after adding edges
+  # draw and show graph after adding edges 
+  # (can skip this step after running it once to save time)
   print("Creating graph...")
   create_graph()
   print("Graph created!")

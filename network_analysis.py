@@ -5,8 +5,11 @@ import math
 
 def get_network_analysis(graph):
 
+  num_nodes = graph.number_of_nodes()
+  num_edges = graph.number_of_edges()
+
   # TODO: write into file
-  # print('#nodes: {}\n#edges: {}\nEdges: {}\n'.format(graph.number_of_nodes(), graph.number_of_edges(), graph.edges.data('weight')))
+  # print('# of nodes: {}\n# of edges: {}\nEdges: {}\n'.format(num_nodes, num_edges, graph.edges.data('weight')))
 
   get_node_degree_distribution(graph) # Node degree distribution
   get_weakly_connected_component(graph) # Weakly connected component
@@ -18,6 +21,7 @@ def get_network_analysis(graph):
 
 def create_graph_analysis(x, y, title, xlabel, ylabel, file_name):
   plt.scatter(x, y)
+  plt.loglog(base=10)
   plt.title(title)
   plt.xlabel(xlabel)
   plt.ylabel(ylabel)
@@ -25,15 +29,14 @@ def create_graph_analysis(x, y, title, xlabel, ylabel, file_name):
   plt.clf() 
 
 def get_x(values):
-  # calculate log for x-axis
   set_list = list(set(values)) # remove duplicates
-  x = [math.log(v) if v != 0 else 0 for v in set_list] 
+  x = [v for v in set_list] 
   return x
 
 def get_y(values):
   # count frequency and calculate log for y-axis
   set_list = list(set(values)) # remove duplicates
-  y = [math.log(values.count(v)) for v in set_list]
+  y = [values.count(v) for v in set_list]
   return y
 
 def get_node_degree_distribution(graph):
@@ -55,10 +58,11 @@ def get_weakly_connected_component(graph):
   subgraphs = [graph.subgraph(wcc) for wcc in nx.weakly_connected_components(graph)]
   # count size of subgraphs
   sizes = [g.number_of_nodes() for g in subgraphs]
-  create_graph_analysis(get_x(sizes), get_y(sizes), "Weakly Connected Component", "Weakly connected component size", "Count", "graphs/wcc.png")
+  create_graph_analysis(get_x(sizes), get_y(sizes), "Connectivity", "Weakly connected component size", "Count", "graphs/wcc.png")
 
 def get_clustering_coefficient(graph):
   # get clustering coefficient for each node in graph
   # the edge attribute that holds the numerical value used as a weight
+  d = [k for n, k in graph.degree(weight='weight')]
   cc = [v for n, v in nx.clustering(graph, weight='weight').items()]
-  create_graph_analysis(get_x(cc), get_y(cc), "Local Clustering Coefficient", "Clustering coefficient, c", "Count", "graphs/cc.png")
+  create_graph_analysis(d, cc, "Clustering", "Degree, k", "Clustering coefficient, c", "graphs/cc.png")
