@@ -2,6 +2,7 @@ import os
 import networkx as nx
 import pandas as pd
 import matplotlib.pyplot as plt
+from network_analysis import get_network_analysis 
 
 def set_interaction(id, parent_id, coc_df, post_df, has_interaction):
   # check for comments replying to a comment (parent_id = id)
@@ -38,7 +39,8 @@ def create_edges(parent_row, child_rows):
       graph.add_weighted_edges_from([(child_author, parent_author, 1)])
 
 def create_graph():
-  nx.draw(graph, node_size=10)
+  weights = [float(f"1.{graph[u][v]['weight']}") for u,v in graph.edges()]
+  nx.draw(graph, node_size=10, width=weights)
   plt.savefig("graphs/graph.png".format(type), bbox_inches='tight')
   plt.show()
   plt.clf()  # clear canvas to show most recent graph
@@ -60,49 +62,6 @@ def get_df():
 
   return coc_df, post_df
 
-def get_graph_analysis():
-  get_node_degree_distribution()  # Node degree distribution
-  get_weakly_connected_component()  # Weakly connected component
-
-def create_graph_analysis(graph_values, title, xlabel, ylabel, file_name):
-  plt.hist(graph_values)
-  plt.title(title)
-  plt.xlabel(xlabel)
-  plt.ylabel(ylabel)
-  plt.savefig(file_name)
-  plt.clf()
-
-def get_node_degree_distribution():
-  # The degree is the sum of the edge weights adjacent to the node.
-  # TODO: change to plot log-log scatter plot
-  # all degrees
-  d = [k for n, k in graph.degree(weight='weight')]
-  # x-axis
-  x = []
-  for v in d:
-      if v not in x:
-          x.append(v)
-  # y-axis
-  y = [d.count(v) for v in x]
-  print(x, y)
-
-  create_graph_analysis(d, "Degree Distribution",
-                        "Degree, k", "Count, Nk", "graphs/dd_all.png")
-
-  # in degree
-  ind = d = [k for n, k in graph.in_degree(weight='weight')]
-  create_graph_analysis(ind, "In Degree Distribution",
-                        "In Degree, k", "Count, Nk", "graphs/dd_in.png")
-
-  # out degree
-  outd = [k for n, k in graph.out_degree(weight='weight')]
-  create_graph_analysis(outd, "Out Degree Distribution",
-                        "Out Degree, k", "Count, Nk", "graphs/dd_out.png")
-
-def get_weakly_connected_component():
-  create_graph_analysis("outd", "Out Degree Distribution",
-                        "Out Degree, k", "Count, Nk", "graphs/dd_out.png")
-
 if __name__ == "__main__":
   # get 'Comment On Comment Dataframe' and 'Post Dataframe'
   coc_df, post_df = get_df()
@@ -110,22 +69,29 @@ if __name__ == "__main__":
 
   filter_coc_df(coc_df)
   graph = nx.DiGraph()
-
+  
   # l = 1
+  print("Creating edges...")
   for id in coc_df['parent_id']:
-    #   if l <= 10:
-    parent_id = id.split('_', 1)[1]
-    has_interaction = True
-    parent_row, child_rows, has_interaction = set_interaction(
-      id, parent_id, coc_df, post_df, has_interaction)
+    # if l <= 10:
+      parent_id = id.split('_', 1)[1]
+      has_interaction = True
+      parent_row, child_rows, has_interaction = set_interaction(id, parent_id,
+                                                                coc_df, post_df,
+                                                                has_interaction)
 
-    if has_interaction:
-      # create edges and set nodes name=author
-      create_edges(parent_row, child_rows)
-    # l += 1
-
+      if has_interaction:
+        # create edges and set nodes name=author
+        create_edges(parent_row, child_rows)
+      # l += 1
+  print("Edges created!")
+  
   # draw and show graph after adding edges
+  print("Creating graph...")
   create_graph()
+  print("Graph created!")
 
-  # TODO: analyze the graph and print into file
-  get_graph_analysis()
+  # TODO: analyze the graph with more data and print into file
+  print("Analzing network...")
+  get_network_analysis(graph)
+  print("Network analyzed!")
