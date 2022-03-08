@@ -17,7 +17,8 @@ def set_interaction(id, parent_id, coc_df, post_df):
     # get all rows where parent_id = parent_id (reply to someone's a comment)s
     child_rows = coc_df.loc[coc_df['parent_id'] == id]
   else:
-    print("error: there's no interaction")
+    # node has no data for parent_id = id, hence don't create edge
+    parent_row, child_rows = None, None
 
   return parent_row, child_rows
 
@@ -101,6 +102,7 @@ def get_weakly_connected_component():
 
 if __name__ == "__main__":
 
+    # get 'Comment On Comment Dataframe' and 'Post Dataframe' 
     coc_df, post_df = get_df()
     authors_list = coc_df['author'].tolist()
 
@@ -113,8 +115,9 @@ if __name__ == "__main__":
         parent_id = id.split('_', 1)[1]
         parent_row, child_rows = set_interaction(id, parent_id, coc_df, post_df)
 
-        # create edges and set nodes name=author
-        create_edges(parent_row, child_rows)
+        if not (parent_row.empty or child_rows.empty):
+          # create edges and set nodes name=author
+          create_edges(parent_row, child_rows)
 
         l += 1
     
