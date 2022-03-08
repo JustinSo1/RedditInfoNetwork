@@ -13,10 +13,8 @@ def get_network_analysis(graph):
 
   get_node_degree_distribution(graph) # Node degree distribution
   get_weakly_connected_component(graph) # Weakly connected component
-
-  # TODO: local clustering coefficient - look into if this is done correctly
-  # do we also want to include average (global) clustering coefficient?
-  get_clustering_coefficient(graph) # Local clustering coefficient
+  get_clustering_coefficient(graph) # Clustering coefficient
+  get_shortest_path(graph) # Shortest Path Lengths
 
 
 def create_graph_analysis(x, y, title, xlabel, ylabel, file_name):
@@ -66,3 +64,12 @@ def get_clustering_coefficient(graph):
   d = [k for n, k in graph.degree(weight='weight')]
   cc = [v for n, v in nx.clustering(graph, weight='weight').items()]
   create_graph_analysis(d, cc, "Clustering", "Degree, k", "Clustering coefficient, c", "graphs/cc.png")
+
+def get_shortest_path(graph):
+  # get lengths for each node in graph
+  lengths = [] 
+  for u in graph.nodes():
+    paths = nx.single_source_shortest_path_length(graph, u)
+    for p in paths:
+      lengths.append(paths[p])
+  create_graph_analysis(get_x(lengths), get_y(lengths), "Shortest Path", "Shortest Path Length, k", "Count", "graphs/sp.png")
