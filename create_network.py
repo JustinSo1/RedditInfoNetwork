@@ -3,7 +3,7 @@ import networkx as nx
 import pandas as pd
 import matplotlib.pyplot as plt
 
-def set_interaction(id, parent_id, coc_df, post_df):
+def set_interaction(id, parent_id, coc_df, post_df, has_interaction):
   # check for comments replying to a comment (parent_id = id)
   if (coc_df['id'] == parent_id).any():
     # get the row where id = parent_id (user receiving the comment)
@@ -18,9 +18,9 @@ def set_interaction(id, parent_id, coc_df, post_df):
     child_rows = coc_df.loc[coc_df['parent_id'] == id]
   else:
     # node has no data for parent_id = id, hence don't create edge
-    parent_row, child_rows = None, None
+    has_interaction = False
 
-  return parent_row, child_rows
+  return parent_row, child_rows, has_interaction
 
 def create_edges(parent_row, child_rows):
   # add_weighted_edges_from(source = child_author, target = parent_author, weight)
@@ -113,9 +113,10 @@ if __name__ == "__main__":
     for id in coc_df['parent_id']:
       if l <= 10:
         parent_id = id.split('_', 1)[1]
-        parent_row, child_rows = set_interaction(id, parent_id, coc_df, post_df)
+        has_interaction = True
+        parent_row, child_rows = set_interaction(id, parent_id, coc_df, post_df, has_interaction)
 
-        if not (parent_row.empty or child_rows.empty):
+        if has_interaction:
           # create edges and set nodes name=author
           create_edges(parent_row, child_rows)
 
