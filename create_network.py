@@ -93,6 +93,6 @@ if __name__ == "__main__":
   print("Graph created!")
 
   # TODO: analyze the graph with more data and print into file
-  print("Analzing network...")
+  print("Analyzing network...")
   get_network_analysis(graph)
   print("Network analyzed!")

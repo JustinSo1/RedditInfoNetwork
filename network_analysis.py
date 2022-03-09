@@ -1,21 +1,20 @@
 import networkx as nx
 import pandas as pd
 import matplotlib.pyplot as plt
-import math
 
 def get_network_analysis(graph):
 
-  num_nodes = graph.number_of_nodes()
-  num_edges = graph.number_of_edges()
-
-  # TODO: write into file
-  # print('# of nodes: {}\n# of edges: {}\nEdges: {}\n'.format(num_nodes, num_edges, graph.edges.data('weight')))
-
+  num_nodes = graph.number_of_nodes() # of nodes
+  num_edges = graph.number_of_edges() # of edges
   get_node_degree_distribution(graph) # Node degree distribution
+  avg_cc = get_clustering_coefficient(graph) # Clustering coefficient / average clustering coefficient
+  avg_sp = get_shortest_path_length(graph) # Shortest path engths / average shortest path length
   get_weakly_connected_component(graph) # Weakly connected component
-  get_clustering_coefficient(graph) # Clustering coefficient
-  get_shortest_path(graph) # Shortest Path Lengths
-
+  dia = get_diameter(graph) # Diameter
+  
+  # TODO: write into file
+  print('# of Nodes: {}\n# of Edges: {}\nGlobal Clustering Coefficient: {}\nAverage Shortest Path: {}\nDiameter: {}'.format(num_nodes, num_edges, avg_cc, avg_sp, dia))
+  print('\nEdges: {}\n'.format(graph.edges.data('weight'))) # optional to print
 
 def create_graph_analysis(x, y, title, xlabel, ylabel, file_name):
   plt.scatter(x, y)
@@ -65,7 +64,11 @@ def get_clustering_coefficient(graph):
   cc = [v for n, v in nx.clustering(graph, weight='weight').items()]
   create_graph_analysis(d, cc, "Clustering", "Degree, k", "Clustering coefficient, c", "graphs/cc.png")
 
-def get_shortest_path(graph):
+  # calculate global clustering coefficient (global)
+  avg_cc = nx.average_clustering(graph)
+  return avg_cc
+
+def get_shortest_path_length(graph):
   # get lengths for each node in graph
   lengths = [] 
   for u in graph.nodes():
@@ -73,3 +76,18 @@ def get_shortest_path(graph):
     for p in paths:
       lengths.append(paths[p])
   create_graph_analysis(get_x(lengths), get_y(lengths), "Shortest Path", "Shortest Path Length, k", "Count", "graphs/sp.png")
+  
+  # calculate average shortest path length
+  try:
+    avg_sp = nx.average_shortest_path_length(graph)
+  except Exception as e:
+    avg_sp = e
+  return avg_sp
+
+def get_diameter(graph):
+  # calculate diameter
+  try:
+    dia = nx.diameter(graph)
+  except Exception as e:
+    dia = e
+  return dia
