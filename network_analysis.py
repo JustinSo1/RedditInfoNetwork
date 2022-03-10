@@ -8,13 +8,15 @@ def get_network_analysis(graph):
   num_edges = graph.number_of_edges() # of edges
   get_node_degree_distribution(graph) # Node degree distribution
   avg_cc = get_clustering_coefficient(graph) # Clustering coefficient / average clustering coefficient
-  avg_sp = get_shortest_path_length(graph) # Shortest path engths / average shortest path length
+  avg_sp, num_nodes, num_edges = get_shortest_path_length(graph) # Shortest path engths / average shortest path length
   get_weakly_connected_component(graph) # Weakly connected component
-  dia = get_diameter(graph) # Diameter
+  dia, num_nodes, num_edges = get_diameter(graph) # Diameter
   
   # TODO: write into file
-  print('# of Nodes: {}\n# of Edges: {}\nGlobal Clustering Coefficient: {}\nAverage Shortest Path: {}\nDiameter: {}'.format(num_nodes, num_edges, avg_cc, avg_sp, dia))
-  print('\nEdges: {}\n'.format(graph.edges.data('weight'))) # optional to print
+  print('All Components:\n# of Nodes: {}\n# of Edges: {}\nGlobal Clustering Coefficient: {}\n'.format(num_nodes, num_edges, avg_cc))
+  print('Weakly Connected Component:\n# of Nodes: {}\n# of Edges: {}\nAverage Shortest Path: {}\n'.format(num_nodes, num_edges, avg_sp))
+  print('Strongly Connected Component:\n# of Nodes: {}\n# of Edges: {}\nDiameter: {}\n'.format(num_nodes, num_edges, dia))
+  # print('\nEdges: {}\n'.format(graph.edges.data('weight'))) # optional to print
 
 def create_graph_analysis(x, y, title, xlabel, ylabel, file_name):
   plt.scatter(x, y)
@@ -79,15 +81,25 @@ def get_shortest_path_length(graph):
   
   # calculate average shortest path length
   try:
-    avg_sp = nx.average_shortest_path_length(graph)
+    giant_component = graph.subgraph(max(nx.weakly_connected_components(graph), key=len))
+    num_nodes = giant_component.number_of_nodes()
+    num_edges = giant_component.number_of_edges()
+    avg_sp = nx.average_shortest_path_length(giant_component)
   except Exception as e:
     avg_sp = e
-  return avg_sp
+    num_nodes = e
+    num_edges = e
+  return avg_sp, num_nodes ,num_edges
 
 def get_diameter(graph):
   # calculate diameter
   try:
-    dia = nx.diameter(graph)
+    giant_component = graph.subgraph(max(nx.strongly_connected_components(graph), key=len))
+    num_nodes = giant_component.number_of_nodes()
+    num_edges = giant_component.number_of_edges()
+    dia = nx.diameter(giant_component)
   except Exception as e:
     dia = e
-  return dia
+    num_nodes = e
+    num_edges = e
+  return dia, num_nodes, num_edges
