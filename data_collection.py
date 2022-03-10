@@ -17,7 +17,8 @@ class DataCollection:
         print("Writing pushshift data to csv")
 
         try:
-            write_data_to_csv(reddit_data, headers, self.file_path, subreddit, data_type)
+            write_data_to_csv(reddit_data, headers=headers, file_path=self.file_path, subreddit=subreddit,
+                              data_type=data_type)
         except Exception as e:
             logger.exception(e)
 
