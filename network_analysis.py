@@ -95,7 +95,7 @@ def get_shortest_path_length(graph):
     paths = nx.single_source_shortest_path_length(graph, u)
     for p in paths:
       lengths.append(paths[p])
-  create_graph_analysis(get_x(lengths), get_y(lengths), "Shortest Path", "Shortest Path Length, k", "Count", "graphs/sp.png")
+  create_graph_analysis(get_x(lengths), get_y(lengths), "Shortest Path", "Shortest Path Length", "Count", "graphs/sp.png")
   
   # calculate average shortest path length
   try:
