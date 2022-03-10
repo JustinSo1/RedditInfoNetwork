@@ -1,6 +1,7 @@
 import networkx as nx
 import pandas as pd
 import matplotlib.pyplot as plt
+import csv
 
 def get_network_analysis(graph):
 
@@ -11,12 +12,29 @@ def get_network_analysis(graph):
   avg_sp, num_nodes, num_edges = get_shortest_path_length(graph) # Shortest path engths / average shortest path length
   get_weakly_connected_component(graph) # Weakly connected component
   dia, num_nodes, num_edges = get_diameter(graph) # Diameter
-  
-  # TODO: write into file
-  print('All Components:\n# of Nodes: {}\n# of Edges: {}\nGlobal Clustering Coefficient: {}\n'.format(num_nodes, num_edges, avg_cc))
-  print('Weakly Connected Component:\n# of Nodes: {}\n# of Edges: {}\nAverage Shortest Path: {}\n'.format(num_nodes, num_edges, avg_sp))
-  print('Strongly Connected Component:\n# of Nodes: {}\n# of Edges: {}\nDiameter: {}\n'.format(num_nodes, num_edges, dia))
-  # print('\nEdges: {}\n'.format(graph.edges.data('weight'))) # optional to print
+
+  with open('network_analysis.csv', 'w', newline='') as csvfile:
+      writer = csv.writer(csvfile)
+      component_type = ['All Component', 'Weakly Connected Component', 'Strongly Connected Component']
+      
+      ac_header = ['Num of Nodes', 'Num of Edges','Global Clustering Coefficient']
+      ac_data = [num_nodes, num_edges, avg_cc]
+      writer.writerow([component_type[0]])
+      writer.writerow(ac_header)
+      writer.writerow(ac_data)
+
+      wcc_header = ['Num of Nodes', 'Num of Edges', 'Average Shortest Path']
+      wcc_data = num_nodes, num_edges, avg_sp
+      writer.writerow([component_type[1]])
+      writer.writerow(wcc_header)
+      writer.writerow(wcc_data)
+
+      scc_header = ['Num of Nodes', 'Num of Edges', 'Diameter']
+      scc_data = num_nodes, num_edges, dia
+      writer.writerow([component_type[2]])
+      writer.writerow(scc_header)
+      writer.writerow(scc_data)
+
 
 def create_graph_analysis(x, y, title, xlabel, ylabel, file_name):
   plt.scatter(x, y)
