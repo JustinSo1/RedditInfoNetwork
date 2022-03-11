@@ -9,9 +9,9 @@ def get_network_analysis(graph):
   num_edges = graph.number_of_edges() # of edges
   get_node_degree_distribution(graph) # Node degree distribution
   avg_cc = get_clustering_coefficient(graph) # Clustering coefficient / average clustering coefficient
-  avg_sp, num_nodes, num_edges = get_shortest_path_length(graph) # Shortest path engths / average shortest path length
+  avg_sp, num_nodes_weak, num_edges_weak = get_shortest_path_length(graph) # Shortest path engths / average shortest path length
   get_weakly_connected_component(graph) # Weakly connected component
-  dia, num_nodes, num_edges = get_diameter(graph) # Diameter
+  dia, num_nodes_strong, num_edges_strong = get_diameter(graph) # Diameter
 
   with open('network_analysis.csv', 'w', newline='') as csvfile:
       writer = csv.writer(csvfile)
@@ -24,13 +24,13 @@ def get_network_analysis(graph):
       writer.writerow(ac_data)
 
       wcc_header = ['Num of Nodes', 'Num of Edges', 'Average Shortest Path']
-      wcc_data = num_nodes, num_edges, avg_sp
+      wcc_data = num_nodes_weak, num_edges_weak, avg_sp
       writer.writerow([component_type[1]])
       writer.writerow(wcc_header)
       writer.writerow(wcc_data)
 
       scc_header = ['Num of Nodes', 'Num of Edges', 'Diameter']
-      scc_data = num_nodes, num_edges, dia
+      scc_data = num_nodes_strong, num_edges_strong, dia
       writer.writerow([component_type[2]])
       writer.writerow(scc_header)
       writer.writerow(scc_data)
