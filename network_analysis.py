@@ -92,7 +92,7 @@ def get_shortest_path_length(graph):
   # get lengths for each node in graph
   lengths = [] 
   for u in graph.nodes():
-    paths = nx.single_source_shortest_path_length(graph, u)
+    paths = nx.single_source_dijkstra_path_length(graph, u, weight='weight')
     for p in paths:
       lengths.append(paths[p])
   create_graph_analysis(get_x(lengths), get_y(lengths), "Shortest Path", "Shortest Path Length", "Count", "graphs/sp.png")
@@ -102,7 +102,7 @@ def get_shortest_path_length(graph):
     giant_component = graph.subgraph(max(nx.weakly_connected_components(graph), key=len))
     num_nodes = giant_component.number_of_nodes()
     num_edges = giant_component.number_of_edges()
-    avg_sp = nx.average_shortest_path_length(giant_component)
+    avg_sp = nx.average_shortest_path_length(giant_component, weight='weight', method='dijkstra')
   except Exception as e:
     avg_sp = e
     num_nodes = e
