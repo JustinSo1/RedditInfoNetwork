@@ -4,14 +4,28 @@ import matplotlib.pyplot as plt
 import csv
 
 def get_network_analysis(graph):
-
-  num_nodes = graph.number_of_nodes() # of nodes
-  num_edges = graph.number_of_edges() # of edges
-  get_node_degree_distribution(graph) # Node degree distribution
-  avg_cc = get_clustering_coefficient(graph) # Clustering coefficient / average clustering coefficient
-  avg_sp, num_nodes_weak, num_edges_weak = get_shortest_path_length(graph) # Shortest path engths / average shortest path length
-  get_weakly_connected_component(graph) # Weakly connected component
-  dia, num_nodes_strong, num_edges_strong = get_diameter(graph) # Diameter
+  
+  # of nodes and # of edges for graph
+  num_nodes, num_edges = get_num_nodes_and_edges(graph) 
+  
+  # Node degree distribution scatter plot
+  get_node_degree_distribution(graph) 
+  # Clustering coefficient scatter plot and get average clustering coefficient
+  avg_cc = get_clustering_coefficient(graph) 
+  
+  # Weakly connected component scatter plot and get largest weakly connected component
+  wcc_graph = get_weakly_connected_component(graph)
+  # of nodes and # of edges for wcc_graph
+  num_nodes_wcc, num_edges_wcc = get_num_nodes_and_edges(wcc_graph) 
+  # Shortest path lengths scatter plot and get average shortest path length
+  avg_sp= get_shortest_path_length(graph, wcc_graph) 
+  
+  # Get largest strongly connected component
+  scc_graph = get_strongly_connected_component(graph) 
+  # of nodes and # of edges for scc_graph
+  num_nodes_scc, num_edges_scc = get_num_nodes_and_edges(scc_graph)
+  # Diameter
+  dia = get_diameter(scc_graph)
 
   with open('network_analysis.csv', 'w', newline='') as csvfile:
     writer = csv.writer(csvfile)
@@ -24,18 +38,19 @@ def get_network_analysis(graph):
     writer.writerow(ac_data)
 
     wcc_header = ['Num of Nodes', 'Num of Edges', 'Average Shortest Path']
-    wcc_data = num_nodes_weak, num_edges_weak, avg_sp
+    wcc_data = num_nodes_wcc, num_edges_wcc, avg_sp
     writer.writerow([component_type[1]])
     writer.writerow(wcc_header)
     writer.writerow(wcc_data)
 
     scc_header = ['Num of Nodes', 'Num of Edges', 'Diameter']
-    scc_data = num_nodes_strong, num_edges_strong, dia
+    scc_data = num_nodes_scc, num_edges_scc, dia
     writer.writerow([component_type[2]])
     writer.writerow(scc_header)
     writer.writerow(scc_data)
 
 def create_graph_analysis(x, y, title, xlabel, ylabel, file_name):
+  # create scatter plots
   plt.scatter(x, y)
   plt.loglog(base=10)
   plt.title(title)
@@ -43,6 +58,9 @@ def create_graph_analysis(x, y, title, xlabel, ylabel, file_name):
   plt.ylabel(ylabel)
   plt.savefig(file_name)
   plt.clf() 
+
+def get_num_nodes_and_edges(graph):
+  return graph.number_of_nodes(), graph.number_of_edges()
 
 def get_x_axis_values(values):
   x_axis_values = list(set(values)) # remove duplicates
@@ -69,10 +87,22 @@ def get_node_degree_distribution(graph):
 
 def get_weakly_connected_component(graph):
   # create subgraphs for weakly connected components
-  subgraphs = [graph.subgraph(wcc) for wcc in nx.weakly_connected_components(graph)]
+  subgraphs = []
+  largest_wcc = nx.path_graph(1)
+  for wcc in nx.weakly_connected_components(graph):
+    subgraphs.append(graph.subgraph(wcc))
+    if len(wcc) > len(largest_wcc):
+      largest_wcc = graph.subgraph(wcc) # get largest weakly connected component
   # count size of subgraphs
   sizes = [g.number_of_nodes() for g in subgraphs]
   create_graph_analysis(get_x_axis_values(sizes), get_y_axis_values(sizes), "Connectivity", "Weakly connected component size", "Count", "graphs/wcc.png")
+  # return largest weakly connected component
+  return largest_wcc
+
+def get_strongly_connected_component(graph):
+  largest_scc = graph.subgraph(max(nx.strongly_connected_components(graph), key=len))
+  # return largest strongly connected component
+  return largest_scc
 
 def get_clustering_coefficient(graph):
   # get clustering coefficient and degree for each node in graph
@@ -84,7 +114,7 @@ def get_clustering_coefficient(graph):
   avg_cc = nx.average_clustering(graph)
   return avg_cc
 
-def get_shortest_path_length(graph):
+def get_shortest_path_length(graph, wcc_graph):
   # get lengths for each node in graph
   lengths = [] 
   for u in graph.nodes():
@@ -93,17 +123,11 @@ def get_shortest_path_length(graph):
       lengths.append(paths[p])
   create_graph_analysis(get_x_axis_values(lengths), get_y_axis_values(lengths), "Shortest Path", "Shortest Path Length", "Count", "graphs/sp.png")
   
-  # calculate average shortest path length
-  giant_component = graph.subgraph(max(nx.weakly_connected_components(graph), key=len))
-  num_nodes = giant_component.number_of_nodes()
-  num_edges = giant_component.number_of_edges()
-  avg_sp = nx.average_shortest_path_length(giant_component, weight='weight', method='dijkstra')
-  return avg_sp, num_nodes ,num_edges
+  # calculate average shortest path length using weakly_connected_component
+  avg_sp = nx.average_shortest_path_length(wcc_graph, weight='weight', method='dijkstra')
+  return avg_sp
 
 def get_diameter(graph):
-  # calculate diameter
-  giant_component = graph.subgraph(max(nx.strongly_connected_components(graph), key=len))
-  num_nodes = giant_component.number_of_nodes()
-  num_edges = giant_component.number_of_edges()
-  dia = nx.diameter(giant_component)
-  return dia, num_nodes, num_edges
+  # calculate diameter using strong_connected_component
+  dia = nx.diameter(graph)
+  return dia
