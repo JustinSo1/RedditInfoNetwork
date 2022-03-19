@@ -17,9 +17,11 @@ def get_network_analysis(graph):
     wcc_graph = get_weakly_connected_component(graph)
     # of nodes and # of edges for wcc_graph
     num_nodes_wcc, num_edges_wcc = get_num_nodes_and_edges(wcc_graph)
-    # Shortest path lengths scatter plot and get average shortest path length
-    avg_sp = get_shortest_path_length(graph, wcc_graph)
 
+    # Shortest path lengths scatter plot
+    plot_shortest_path_length(graph)
+
+    avg_shortest_path_wcc = get_avg_shortest_path_length(wcc_graph)
     # Get largest strongly connected component
     scc_graph = get_strongly_connected_component(graph)
     # of nodes and # of edges for scc_graph
@@ -38,7 +40,7 @@ def get_network_analysis(graph):
         writer.writerow(ac_data)
 
         wcc_header = ['Num of Nodes', 'Num of Edges', 'Average Shortest Path']
-        wcc_data = num_nodes_wcc, num_edges_wcc, avg_sp
+        wcc_data = num_nodes_wcc, num_edges_wcc, avg_shortest_path_wcc
         writer.writerow([component_type[1]])
         writer.writerow(wcc_header)
         writer.writerow(wcc_data)
@@ -127,7 +129,7 @@ def get_clustering_coefficient(graph):
     return avg_cc
 
 
-def get_shortest_path_length(graph, wcc_graph):
+def plot_shortest_path_length(graph):
     # get lengths for each node in graph
     lengths = []
     for u in graph.nodes():
@@ -137,8 +139,10 @@ def get_shortest_path_length(graph, wcc_graph):
     create_graph_analysis(get_x_axis_values(lengths), get_y_axis_values(lengths), "Shortest Path",
                           "Shortest Path Length", "Count", "graphs/sp.png")
 
+
+def get_avg_shortest_path_length(graph):
     # calculate average shortest path length using weakly_connected_component
-    avg_sp = nx.average_shortest_path_length(wcc_graph, weight='weight', method='dijkstra')
+    avg_sp = nx.average_shortest_path_length(graph, weight='weight', method='dijkstra')
     return avg_sp
 
 
