@@ -1,7 +1,7 @@
-import networkx as nx
-import pandas as pd
-import matplotlib.pyplot as plt
 import csv
+
+import matplotlib.pyplot as plt
+import networkx as nx
 
 
 def get_network_analysis(graph):
