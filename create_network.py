@@ -37,19 +37,15 @@ def create_edges(parent_row, child_rows):
         if parent_author == child_author:
             continue
         # check if authors has already interacted with each other 
-        # use .has_edge(author), change the weight and append comment
+        # use .has_edge(child_author, parent_author), change the weight and append comment
         elif graph.has_edge(child_author, parent_author):
-            graph[child_author][parent_author]['weight'] += 1
+            weight = graph[child_author][parent_author]['weight']
             comments = list(graph[child_author][parent_author]['comments'])
-            # print("created before append ({},{}) comments={} comcom={}".format(child_author, parent_author, len(comments), comments))
             comments.append(child_comment)
-            nx.set_edge_attributes(graph, {(child_author, parent_author): {"comments": comments}})
-            # print("created after append ({},{}) comments={} comcom={}".format(child_author, parent_author, len(comments), comments))
+            graph.add_edge(child_author, parent_author, weight=weight+1, comments=comments)
         else: # set default weight to 1, set comment from child author in edge
-            graph.add_weighted_edges_from([(child_author, parent_author, 1)])
+            graph.add_edge(child_author, parent_author, weight=1, comments=comments)
             comments.append(child_comment)
-            nx.set_edge_attributes(graph, {(child_author, parent_author): {"comments": comments}})
-            # print("not created ({},{}) comments={}".format(child_author, parent_author, len(comments)))
 
 def create_graph():
     weights = [float(f"1.{graph[u][v]['weight']}") for u, v in graph.edges()]
