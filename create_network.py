@@ -29,17 +29,27 @@ def set_interaction(id, parent_id, comments_df, posts_df, has_interaction):
 def create_edges(parent_row, child_rows):
     # add_weighted_edges_from(source = child_author, target = parent_author, weight)
     for index, child_row in child_rows.iterrows():
-        child_author = child_row['author']
         parent_author = parent_row['author'].iloc[0]
+        child_author = child_row['author']
+        child_comment = child_row['body']
+        comments = []
         # If its a self loop, skip creating an edge to itself
         if parent_author == child_author:
             continue
-        # check if authors has already interacted with each other - use .has_edge(author), change the weight
+        # check if authors has already interacted with each other 
+        # use .has_edge(author), change the weight and append comment
         elif graph.has_edge(child_author, parent_author):
             graph[child_author][parent_author]['weight'] += 1
-        else:  # set default weight to 1
+            comments = list(graph[child_author][parent_author]['comments'])
+            # print("created before append ({},{}) comments={} comcom={}".format(child_author, parent_author, len(comments), comments))
+            comments.append(child_comment)
+            nx.set_edge_attributes(graph, {(child_author, parent_author): {"comments": comments}})
+            # print("created after append ({},{}) comments={} comcom={}".format(child_author, parent_author, len(comments), comments))
+        else: # set default weight to 1, set comment from child author in edge
             graph.add_weighted_edges_from([(child_author, parent_author, 1)])
-
+            comments.append(child_comment)
+            nx.set_edge_attributes(graph, {(child_author, parent_author): {"comments": comments}})
+            # print("not created ({},{}) comments={}".format(child_author, parent_author, len(comments)))
 
 def create_graph():
     weights = [float(f"1.{graph[u][v]['weight']}") for u, v in graph.edges()]
@@ -59,7 +69,7 @@ def filter_comments_df(comments_df):
 def get_df():
     coc_path = os.path.join("comment_data", "coronavirus_all_comments.csv")
     comments_df = pd.read_csv(coc_path)
-    comments_df = comments_df[['author', 'id', 'link_id', 'parent_id', 'subreddit_id']]
+    comments_df = comments_df[['author', 'id', 'link_id', 'parent_id', 'subreddit_id', 'body']]
 
     post_path = os.path.join("submission_data", "coronavirus_submissions.csv")
     posts_df = pd.read_csv(post_path)
@@ -74,10 +84,13 @@ if __name__ == "__main__":
     authors_list = comments_df['author'].tolist()
 
     comments_df = filter_comments_df(comments_df)
+    # get unique set of parent_ids
+    parent_ids = set(comments_df['parent_id'])
+
     graph = nx.DiGraph()
 
     print("Creating edges...")
-    for id in comments_df['parent_id']:
+    for id in parent_ids:
         parent_id = id.split('_', 1)[1]
         has_interaction = True
         parent_row, child_rows, has_interaction = set_interaction(id, parent_id,
