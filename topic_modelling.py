@@ -8,6 +8,7 @@ from gensim import corpora
 from gensim import models
 from gensim.models import Phrases
 from gensim.models.phrases import ENGLISH_CONNECTOR_WORDS
+import nltk
 from nltk import pos_tag
 from nltk.corpus import wordnet, stopwords
 from nltk.stem.wordnet import WordNetLemmatizer
@@ -74,8 +75,12 @@ def get_wordnet_pos(treebank_tag):
 if __name__ == "__main__":
     filename = os.path.join("comment_data", "coronavirus_all_comments.csv")
     documents = extract_documents(filename)
-    # nltk.download('punkt') # Run only once
-    # nltk.download('averaged_perceptron_tagger') # Run only once
+    nltk.download('punkt') # Run only once
+    nltk.download('averaged_perceptron_tagger') # Run only once
+    nltk.download('wordnet') # Run only once
+    nltk.download('omw-1.4') # Run only once
+    nltk.download('stopwords') # Run only once
+
     tqdm.pandas()  # Allows progress_map to be used
 
     # Separates sentences in comment
