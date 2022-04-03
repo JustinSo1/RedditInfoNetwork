@@ -3,6 +3,7 @@ from itertools import chain  # to flatten list of sentences of tokens into list 
 from pprint import pprint
 
 import gensim
+from numpy import place
 import pandas as pd
 from gensim import corpora
 from gensim import models
@@ -14,9 +15,12 @@ from nltk.corpus import wordnet, stopwords
 from nltk.stem.wordnet import WordNetLemmatizer
 from nltk.tokenize import sent_tokenize, word_tokenize
 from tqdm import tqdm
-import logging
 
+# LDA model visualization
+import pyLDAvis
+import pyLDAvis.gensim_models as gensimvis
 
+# import logging
 # logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
 
 
@@ -177,3 +181,7 @@ if __name__ == "__main__":
             print ("Score: {}\t Topic ID: {} Topic: {}".format(score, index, lda_model.print_topic(index, 10)))
             print(n)
         i += 1
+
+    # Visualize LDA model with pyLDAvis
+    vis = gensimvis.prepare(topic_model=lda_model, corpus=corpus, dictionary=dictionary_LDA)
+    pyLDAvis.save_html(vis, 'all_users_lda.html')
