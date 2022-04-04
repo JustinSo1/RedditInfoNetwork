@@ -45,6 +45,15 @@ def filter_authors(authors):
     filtered_authors = list(filter(lambda author: author not in ignored_authors, authors))
     return filtered_authors
 
+def filter_comments(df):
+    ignored_text = "Your post or comment has been removed"
+
+    # Temporarily ignore this term while testing on old data
+    ignored_text2 = "Microsoft SQL server"
+    filtered_comments = df[~df['body'].str.contains(ignored_text)]
+    filtered_comments = filtered_comments[~filtered_comments['body'].str.contains(ignored_text2)]
+
+    return filtered_comments
 
 def get_all_comments_by_user(df, user):
     all_comments_by_author = df[df['author'] == user]
@@ -91,11 +100,14 @@ def get_wordnet_pos(treebank_tag):
 if __name__ == "__main__":
     filename = os.path.join("comment_data", "coronavirus_all_comments.csv")
     documents = extract_documents(filename)
-    nltk.download('punkt') # Run only once
-    nltk.download('averaged_perceptron_tagger') # Run only once
-    nltk.download('wordnet') # Run only once
-    nltk.download('omw-1.4') # Run only once
-    nltk.download('stopwords') # Run only once
+    documents = filter_comments(documents)
+
+    # Uncomment when running for the first time:
+    # nltk.download('punkt')
+    # nltk.download('averaged_perceptron_tagger')
+    # nltk.download('wordnet')
+    # nltk.download('omw-1.4')
+    # nltk.download('stopwords')
 
     tqdm.pandas()  # Allows progress_map to be used
 
@@ -124,11 +136,12 @@ if __name__ == "__main__":
     )
 
     # Flattens sentences array: ['ABC', 'DEF']) --> A B C D E F
+    stopwords = stopwords.words('english') + ['https', 'http']
     documents['tokens'] = documents['tokens_sentences_lemmatized'].map(
         lambda sentences: list(chain.from_iterable(sentences)))
     documents['tokens'] = documents['tokens'].map(lambda tokens: [token.lower() for token in tokens if token.isalpha()
                                                                   and token.lower() not in
-                                                                  stopwords.words('english') and len(token) > 1])
+                                                                  stopwords and len(token) > 1])
 
     # get top 10 most frequent names
     n = 10
@@ -155,7 +168,7 @@ if __name__ == "__main__":
     # print(f"corpus: {corpus}")
     print('Number of unique tokens: %d' % len(dictionary_LDA))
     print('Number of documents: %d' % len(corpus))
-    num_topics = 10
+    num_topics = 5
     passes = 4
     lda_model = models.LdaModel(corpus, num_topics=num_topics,
                                 id2word=dictionary_LDA,
@@ -174,13 +187,11 @@ if __name__ == "__main__":
     print(avg_topic_coherences)
 
     # Print out topic distribution for each user/document
-    i = 0
-    for doc in corpus:
+    for i, doc in enumerate(corpus):
         print(authors[i])
         for index, score in sorted(lda_model[doc], key=lambda tup: -1*tup[1]):
             print ("Score: {}\t Topic ID: {} Topic: {}".format(score, index, lda_model.print_topic(index, 10)))
             print(n)
-        i += 1
 
     # Visualize LDA model with pyLDAvis
     vis = gensimvis.prepare(topic_model=lda_model, corpus=corpus, dictionary=dictionary_LDA)
