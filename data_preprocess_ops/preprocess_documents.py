@@ -1,5 +1,6 @@
 from itertools import chain
 
+import pandas as pd
 from tqdm import tqdm
 from data_preprocess_ops.add_POS_tag import add_POS_tag
 from data_preprocess_ops.filter_comments import filter_comments
@@ -13,7 +14,18 @@ def preprocess_documents(documents):
     documents: Dataframe
     Creates new columns of each step and final result will be in 'tokens' column
     """
+    # Gets rid of the chained assignment warnings
+    pd.options.mode.chained_assignment = None  # default='warn'
+
     tqdm.pandas()  # Allows progress_map to be used
+
+    ignored_text = ["Your post or comment has been removed", "Microsoft SQL server"]
+    documents = filter_comments(documents, 'body', ignored_text)
+
+    # Keep only unique comments
+    documents = documents.drop_duplicates(subset=['body'], keep='first')
+
+    documents.to_csv("test")
 
     # Separates sentences in comment
     documents['sentences'] = tokenize_sentence(documents, 'body')

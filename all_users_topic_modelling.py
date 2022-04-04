@@ -5,7 +5,6 @@ import pyLDAvis
 import pyLDAvis.gensim_models as gensimvis
 
 from LDA_topic_modelling import topic_modelling
-from data_preprocess_ops.filter_comments import filter_comments
 from data_preprocess_ops.preprocess_documents import preprocess_documents
 from user_profile_topic_modelling import extract_documents, get_top_k_frequent_authors, filter_authors
 
@@ -32,9 +31,6 @@ if __name__ == "__main__":
     filename = os.path.join("comment_data", "coronavirus_all_comments.csv")
     documents = extract_documents(filename)
     # download_nltk_files() # Uncomment when running for the first time
-
-    ignored_text = ["Your post or comment has been removed", "Microsoft SQL server"]
-    documents = filter_comments(documents, 'body', ignored_text)
 
     documents = preprocess_documents(documents)
 
