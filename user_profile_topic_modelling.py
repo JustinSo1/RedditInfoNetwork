@@ -1,11 +1,6 @@
 import os
-from pprint import pprint
 
 import pandas as pd
-from gensim import corpora
-from gensim import models
-from gensim.models import Phrases
-from gensim.models.phrases import ENGLISH_CONNECTOR_WORDS
 
 from LDA_topic_modelling import topic_modelling
 from data_preprocess_ops.preprocess_documents import preprocess_documents

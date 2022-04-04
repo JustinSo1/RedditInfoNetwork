@@ -2,6 +2,7 @@ from itertools import chain
 
 from tqdm import tqdm
 from data_preprocess_ops.add_POS_tag import add_POS_tag
+from data_preprocess_ops.filter_comments import filter_comments
 from data_preprocess_ops.lemmatize_document import lemmatize_document
 from data_preprocess_ops.remove_stopwords import remove_stopwords
 from data_preprocess_ops.tokenize_document import tokenize_sentence, tokenize_comment
