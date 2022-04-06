@@ -72,7 +72,7 @@ def get_df():
     comments_df = pd.read_csv(comments_path, dtype={"author": "string", "id": "string", "link_id": "string", "parent_id": "string", "body": "string"})
     comments_df = comments_df[['author', 'id', 'link_id', 'parent_id', 'body']]
 
-    posts_path = os.path.join("coronavirus_submission.csv", )
+    posts_path = os.path.join("coronavirus_submission.csv")
     posts_df = pd.read_csv(posts_path, dtype={"author": "string", "id": "string"})
     posts_df = posts_df[['author', 'id']]
 
