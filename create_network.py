@@ -3,6 +3,7 @@ import networkx as nx
 import pandas as pd
 import matplotlib.pyplot as plt
 from network_analysis import get_network_analysis
+from data_preprocess_ops.filter_comments import filter_comments
 
 
 def set_interaction(id, parent_id, comments_df, posts_df, has_interaction):
@@ -59,16 +60,20 @@ def filter_comments_df(comments_df):
     # delete all rows that have "[deleted]" and "AutoModerator" author
     comments_df = comments_df[~comments_df.author.isin(['[deleted]', 'AutoModerator'])]
     comments_df = comments_df.reset_index(drop=True)
+    # filter out comments and remove duplicate comments
+    ignored_text = ["Your post or comment has been removed", "Microsoft SQL server"]
+    comments_df = filter_comments(comments_df, 'body', ignored_text)
+    comments_df = comments_df.drop_duplicates(subset=['body'], keep='first')
     return comments_df
 
 
 def get_df():
-    coc_path = os.path.join("comment_data", "coronavirus_all_comments.csv")
-    comments_df = pd.read_csv(coc_path)
-    comments_df = comments_df[['author', 'id', 'link_id', 'parent_id', 'subreddit_id', 'body']]
+    comments_path = os.path.join("coronavirus_comments.csv")
+    comments_df = pd.read_csv(comments_path, dtype={"author": "string", "id": "string", "link_id": "string", "parent_id": "string", "body": "string"})
+    comments_df = comments_df[['author', 'id', 'link_id', 'parent_id', 'body']]
 
-    post_path = os.path.join("submission_data", "coronavirus_submissions.csv")
-    posts_df = pd.read_csv(post_path)
+    posts_path = os.path.join("coronavirus_submission.csv", )
+    posts_df = pd.read_csv(posts_path, dtype={"author": "string", "id": "string"})
     posts_df = posts_df[['author', 'id']]
 
     return comments_df, posts_df
