@@ -49,10 +49,10 @@ if __name__ == "__main__":
     # authors = get_unique_authors(documents)
     print(f"Unique authors: {len(authors)}")
 
-    for author in authors[1:2]:
+    for author in authors:
         print(author)
         author_tokens = get_all_tokens_by_user(documents, author)
 
         print(f"Author_tokens: {author_tokens}")
 
-        topic_modelling(author_tokens)
+        topic_modelling(author_tokens, num_topics=5, passes=4)

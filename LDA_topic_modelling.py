@@ -6,7 +6,7 @@ from gensim.models import Phrases
 from gensim.models.phrases import ENGLISH_CONNECTOR_WORDS
 
 
-def topic_modelling(author_tokens):
+def topic_modelling(author_tokens, num_topics, passes):
     # Computes Bigram and Trigrams for the tokens
     bigram_model = Phrases(author_tokens, connector_words=ENGLISH_CONNECTOR_WORDS)
     trigram_model = Phrases(bigram_model[author_tokens], min_count=1, connector_words=ENGLISH_CONNECTOR_WORDS)
@@ -19,8 +19,7 @@ def topic_modelling(author_tokens):
     # print(f"corpus: {corpus}")
     print('Number of unique tokens: %d' % len(dictionary_LDA))
     print('Number of documents: %d' % len(corpus))
-    num_topics = 5
-    passes = 4
+
     lda_model = models.LdaModel(corpus, num_topics=num_topics,
                                 id2word=dictionary_LDA,
                                 passes=passes, alpha='auto',
@@ -32,5 +31,9 @@ def topic_modelling(author_tokens):
     avg_topic_coherence = sum([t[1] for t in top_topics]) / num_topics
     print('Average topic coherence: %.4f.' % avg_topic_coherence)
     pprint(top_topics)
+    with open('topics.txt', 'wt') as out:
+        out.write(str(avg_topic_coherence))
+        out.write("\n")
+        pprint(top_topics, stream=out)
     print("------------------------------------------")
     return lda_model, corpus, dictionary_LDA

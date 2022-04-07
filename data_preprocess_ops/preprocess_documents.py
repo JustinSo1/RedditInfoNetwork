@@ -25,7 +25,7 @@ def preprocess_documents(documents):
     # Keep only unique comments
     documents = documents.drop_duplicates(subset=['body'], keep='first')
 
-    documents.to_csv("test")
+    # documents.to_csv("test")
 
     # Separates sentences in comment
     documents['sentences'] = tokenize_sentence(documents, 'body')
