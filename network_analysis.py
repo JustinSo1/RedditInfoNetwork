@@ -5,8 +5,8 @@ import networkx as nx
 
 
 def get_network_analysis(graph):
-    # of nodes and # of edges for graph
-    num_nodes, num_edges = get_num_nodes_and_edges(graph)
+    # of nodes, # of edges and # of interactions for graph
+    num_nodes, num_edges, num_interactions = get_num_nodes_edges_interactions(graph)
 
     # Node degree distribution scatter plot
     get_node_degree_distribution(graph)
@@ -15,8 +15,8 @@ def get_network_analysis(graph):
 
     # Weakly connected component scatter plot and get largest weakly connected component
     wcc_graph = get_weakly_connected_component(graph)
-    # of nodes and # of edges for wcc_graph
-    num_nodes_wcc, num_edges_wcc = get_num_nodes_and_edges(wcc_graph)
+    # of nodes, # of edges and # of interactions for wcc_graph
+    num_nodes_wcc, num_edges_wcc, num_interactions = get_num_nodes_edges_interactions(wcc_graph)
 
     # Shortest path lengths scatter plot
     plot_shortest_path_length(graph)
@@ -24,8 +24,8 @@ def get_network_analysis(graph):
     avg_shortest_path_wcc = get_avg_shortest_path_length(wcc_graph)
     # Get largest strongly connected component
     scc_graph = get_strongly_connected_component(graph)
-    # of nodes and # of edges for scc_graph
-    num_nodes_scc, num_edges_scc = get_num_nodes_and_edges(scc_graph)
+    # of nodes, # of edges and # of interactions for scc_graph
+    num_nodes_scc, num_edges_scc, num_interactions = get_num_nodes_edges_interactions(scc_graph)
     # Diameter
     dia = get_diameter(scc_graph)
 
@@ -33,20 +33,20 @@ def get_network_analysis(graph):
         writer = csv.writer(csvfile)
         component_type = ['All Components', 'Weakly Connected Component', 'Strongly Connected Component']
 
-        ac_header = ['Num of Nodes', 'Num of Edges', 'Global Clustering Coefficient']
-        ac_data = [num_nodes, num_edges, avg_cc]
+        ac_header = ['Num of Nodes', 'Num of Edges', 'Num of Interactions', 'Global Clustering Coefficient']
+        ac_data = [num_nodes, num_edges, num_interactions, avg_cc]
         writer.writerow([component_type[0]])
         writer.writerow(ac_header)
         writer.writerow(ac_data)
 
-        wcc_header = ['Num of Nodes', 'Num of Edges', 'Average Shortest Path']
-        wcc_data = num_nodes_wcc, num_edges_wcc, avg_shortest_path_wcc
+        wcc_header = ['Num of Nodes', 'Num of Edges', 'Num of Interactions', 'Average Shortest Path']
+        wcc_data = num_nodes_wcc, num_edges_wcc, num_interactions, avg_shortest_path_wcc
         writer.writerow([component_type[1]])
         writer.writerow(wcc_header)
         writer.writerow(wcc_data)
 
-        scc_header = ['Num of Nodes', 'Num of Edges', 'Diameter']
-        scc_data = num_nodes_scc, num_edges_scc, dia
+        scc_header = ['Num of Nodes', 'Num of Edges', 'Num of Interactions', 'Diameter']
+        scc_data = num_nodes_scc, num_edges_scc, num_interactions, dia
         writer.writerow([component_type[2]])
         writer.writerow(scc_header)
         writer.writerow(scc_data)
@@ -63,8 +63,8 @@ def create_graph_analysis(x, y, title, xlabel, ylabel, file_name):
     plt.clf()
 
 
-def get_num_nodes_and_edges(graph):
-    return graph.number_of_nodes(), graph.number_of_edges()
+def get_num_nodes_edges_interactions(graph):
+    return graph.number_of_nodes(), graph.number_of_edges(), graph.size(weight='weight')
 
 
 def get_x_axis_values(values):
@@ -94,6 +94,16 @@ def get_node_degree_distribution(graph):
     outd = [k for n, k in graph.out_degree(weight='weight')]
     create_graph_analysis(get_x_axis_values(outd), get_y_axis_values(outd), "Out Degree Distribution", "Out Degree, k",
                           "Count, Nk", "graphs/dd_out.png")
+
+    plt.scatter(get_x_axis_values(ind), get_y_axis_values(ind), label="In-degree Distribution")
+    plt.scatter(get_x_axis_values(outd), get_y_axis_values(outd), label="Out-degree Distribution")
+    plt.loglog(base=10)
+    plt.legend(loc=0)
+    plt.title("In/Out Degree Distribution")
+    plt.xlabel("Degree, k")
+    plt.ylabel("Count, Nk")
+    plt.savefig("graphs/dd_in_out")
+    plt.clf()
 
 
 def get_weakly_connected_component(graph):

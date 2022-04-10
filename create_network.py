@@ -1,3 +1,4 @@
+from email.policy import default
 import os
 import networkx as nx
 import pandas as pd
@@ -49,14 +50,16 @@ def create_edges(parent_row, child_rows):
             comments.append(child_comment)
 
 def create_graph():
-    weights = [float(f"1.{graph[u][v]['weight']}") for u, v in graph.edges()]
-    nx.draw(graph, node_size=10, width=weights)
-    plt.savefig("graphs/graph.png".format(type), bbox_inches='tight')
+    plt.figure(figsize=(200, 200), dpi=50) 
+    weights = [float(f"{graph[u][v]['weight']}") for u, v in graph.edges()]
+    nx.draw(graph, node_size=300, width=weights)
     plt.show()
+    plt.savefig("graphs/graph.png", bbox_inches='tight')
     plt.clf()  # clear canvas to show most recent graph
-
+    plt.figure(figsize=(8.0, 6.0), dpi=80) # reset to default size
 
 def filter_comments_df(comments_df):
+    num_comments_before = len(comments_df) 
     # delete all rows that have "[deleted]" and "AutoModerator" author
     comments_df = comments_df[~comments_df.author.isin(['[deleted]', 'AutoModerator'])]
     comments_df = comments_df.reset_index(drop=True)
@@ -64,7 +67,8 @@ def filter_comments_df(comments_df):
     ignored_text = ["Your post or comment has been removed", "Microsoft SQL server"]
     comments_df = filter_comments(comments_df, 'body', ignored_text)
     comments_df = comments_df.drop_duplicates(subset=['body'], keep='first')
-    return comments_df
+    num_comments_after = len(comments_df) 
+    return comments_df, num_comments_before, num_comments_after
 
 
 def get_df():
@@ -84,7 +88,10 @@ if __name__ == "__main__":
     comments_df, posts_df = get_df()
     authors_list = comments_df['author'].tolist()
 
-    comments_df = filter_comments_df(comments_df)
+    # filter comments
+    comments_df, num_comments_before, num_comments_after = filter_comments_df(comments_df)
+    print(f"# of comments before: {num_comments_before}\n# of comments after: {num_comments_after}")
+
     # get unique set of parent_ids
     parent_ids = set(comments_df['parent_id'])
 
