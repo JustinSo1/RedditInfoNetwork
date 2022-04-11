@@ -31,7 +31,7 @@ def topic_modelling(author_tokens, num_topics, passes):
     avg_topic_coherence = sum([t[1] for t in top_topics]) / num_topics
     print('Average topic coherence: %.4f.' % avg_topic_coherence)
     pprint(top_topics)
-    with open('../topics.txt', 'wt') as out:
+    with open('topics.txt', 'wt') as out:
         out.write(str(avg_topic_coherence))
         out.write("\n")
         pprint(top_topics, stream=out)
