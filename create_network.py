@@ -50,7 +50,7 @@ def create_edges(parent_row, child_rows):
             comments.append(child_comment)
 
 def create_graph():
-    plt.figure(figsize=(200, 200), dpi=50) 
+    plt.figure(figsize=(150, 150), dpi=50) 
     weights = [float(f"{graph[u][v]['weight']}") for u, v in graph.edges()]
     nx.draw(graph, node_size=300, width=weights)
     plt.show()
