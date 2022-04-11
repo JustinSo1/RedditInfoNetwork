@@ -3,6 +3,9 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+Topic_Distribution.csv
+preprocessed_documents.csv
+
 # C extensions
 *.so
 
