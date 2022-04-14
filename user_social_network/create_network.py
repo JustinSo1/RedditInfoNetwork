@@ -4,9 +4,9 @@ import networkx as nx
 import pandas as pd
 import matplotlib.pyplot as plt
 from data_preprocess_ops.filter_comments import filter_comments
-from user_social_network.created_network import save_graph
+from created_network import save_graph
 
-def set_interaction(id, parent_id, comments_df, posts_df, has_interaction):
+def set_interaction(id, parent_id, comments_df, submissions_df, has_interaction):
     # check for comments replying to a comment (parent_id = id)
     if (comments_df['id'] == parent_id).any():
         # get the row where id = parent_id (user receiving the comment)
@@ -14,9 +14,9 @@ def set_interaction(id, parent_id, comments_df, posts_df, has_interaction):
         # get all rows where parent_id = parent_id (reply to someone's a comment)
         child_rows = comments_df.loc[comments_df['parent_id'] == id]
     # check for direct comments on a post (parent_id = id)
-    elif (posts_df['id'] == parent_id).any():
+    elif (submissions_df['id'] == parent_id).any():
         # get the row where id = parent_id post
-        parent_row = posts_df.loc[posts_df['id'] == parent_id]
+        parent_row = submissions_df.loc[submissions_df['id'] == parent_id]
         # get all rows where parent_id = parent_id (reply to someone's a comment)s
         child_rows = comments_df.loc[comments_df['parent_id'] == id]
     else:
@@ -77,16 +77,16 @@ def get_df():
     comments_df = pd.read_csv(comments_path, dtype={"author": "string", "id": "string", "link_id": "string", "parent_id": "string", "body": "string"})
     comments_df = comments_df[['author', 'id', 'link_id', 'parent_id', 'body']]
 
-    posts_path = os.path.join("coronavirus_submission.csv")
-    posts_df = pd.read_csv(posts_path, dtype={"author": "string", "id": "string"})
-    posts_df = posts_df[['author', 'id']]
+    submissions_path = os.path.join("coronavirus_submission.csv")
+    submissions_df = pd.read_csv(submissions_path, dtype={"author": "string", "id": "string"})
+    submissions_df = submissions_df[['author', 'id']]
 
-    return comments_df, posts_df
+    return comments_df, submissions_df
 
 
 if __name__ == "__main__":
-    # get 'Comments Data frame' and 'Posts Data frame'
-    comments_df, posts_df = get_df()
+    # get 'Comments Data frame' and 'Submissions Data frame'
+    comments_df, submissions_df = get_df()
     authors_list = comments_df['author'].tolist()
 
     # filter comments
@@ -103,7 +103,7 @@ if __name__ == "__main__":
         parent_id = id.split('_', 1)[1]
         has_interaction = True
         parent_row, child_rows, has_interaction = set_interaction(id, parent_id,
-                                                                  comments_df, posts_df,
+                                                                  comments_df, submissions_df,
                                                                   has_interaction)
 
         if has_interaction:

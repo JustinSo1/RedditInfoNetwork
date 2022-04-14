@@ -1,7 +1,7 @@
 import csv
 import matplotlib.pyplot as plt
 import networkx as nx
-from user_social_network.created_network import get_graph
+from created_network import get_graph
 
 def get_network_analysis(graph):
     # of nodes, # of edges and # of interactions for graph
