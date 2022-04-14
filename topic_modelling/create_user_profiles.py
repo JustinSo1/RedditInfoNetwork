@@ -1,8 +1,8 @@
-import os
+import ast
 
 import pandas as pd
 
-from topic_modelling.user_profile_topic_modelling import get_user_topics, filter_authors
+from topic_modelling.user_profile_topic_modelling import get_comment_topic
 
 
 def get_unique_authors(df):
@@ -11,18 +11,15 @@ def get_unique_authors(df):
 
 if __name__ == "__main__":
     # filename = os.path.join("Topic_Distribution.csv")
-    # user_topics = pd.read_csv(filename)
-    # user_topics = user_topics.loc[user_topics['author'] == "prettyketty88"]
-    # lda_model, corpus, dictionary_LDA = get_user_topics("prettyketty88")
-    authors = pd.read_csv("preprocessed_documents.csv")
-    authors = get_unique_authors(authors)
-    authors = filter_authors(authors)
-    print(len(authors))
-    # print(authors)
-    # print("MilosBurrito" in authors)
-
-    # pretty_ketty = pd.read_csv("preprocessed_documents.csv")
-    # pretty_ketty = pretty_ketty.loc[pretty_ketty['author'] == "prettyketty88"]
-    # print(pretty_ketty)
-    # lda_model.top_topics()
-    # user_topics = user_topics.loc[user_topics['topic_id'] == 9]
+    documents = pd.read_csv("preprocessed_documents.csv")
+    documents["topics"] = ""
+    documents = documents.reset_index()  # make sure indexes pair with number of rows
+    documents = documents.drop(labels='index', axis=1)
+    for index, row in documents.iterrows():
+        # print(row)
+        row_tokens = ast.literal_eval(row["tokens"])
+        if len(row_tokens) > 0:  # Do not consider emoticons
+            lda_model, corpus, dictionary_LDA = get_comment_topic([row_tokens])
+            documents.at[index, 'topics'] = lda_model.top_topics(corpus)
+    # print(documents.head())
+    documents.to_csv("processed_documents.csv", index=False)
