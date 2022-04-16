@@ -31,7 +31,7 @@ def topic_modelling(author_tokens, num_topics, passes, user=None):
     # Average topic coherence is the sum of topic coherences of all topics, divided by the number of topics.
     avg_topic_coherence = sum([t[1] for t in top_topics]) / num_topics
     print('Average topic coherence: %.4f.' % avg_topic_coherence)
-    pprint(top_topics)
+    # pprint(top_topics)
     if not user:
         with open('topics.txt', 'wt') as out:
             out.write(str(avg_topic_coherence))

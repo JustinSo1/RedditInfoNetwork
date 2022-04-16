@@ -5,6 +5,7 @@ __pycache__/
 
 Topic_Distribution.csv
 preprocessed_documents.csv
+processed_documents.csv
 
 # C extensions
 *.so
