@@ -14,16 +14,17 @@ def get_sentiment(text, analyzer):
     vs = analyzer.polarity_scores(text)
     compound_score = vs['compound']
     if compound_score >= threshold:
-        return "pos"
+        return "pos", compound_score
     elif -threshold < compound_score < threshold:
-        return "neu"
+        return "neu", compound_score
     else:  # <= -threshold
-        return "neg"
+        return "neg", compound_score
 
 
 if __name__ == "__main__":
-    filename = os.path.join("comment_data", "coronavirus_all_comments.csv")
+    filename = os.path.join("processed_documents.csv")
     data = pd.read_csv(filename)
     analyzer = SentimentIntensityAnalyzer()
     data['sentiment'] = data.apply(lambda row: get_sentiment(row['body'], analyzer), axis=1)
+    data.to_csv(filename, index=False)
     print(data)
