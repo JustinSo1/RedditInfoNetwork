@@ -35,7 +35,13 @@ def get_comment_topic_distribution(df):
                 topic_comments_dict[topic] += 1
             else:
                 topic_comments_dict[topic] = 1
-    
+
+    num_comments = 0
+    for x in list(topic_comments_dict.values()):
+      num_comments+=x
+    f = open("comments_stats.txt", "a")
+    f.write(f"# of comments with topic: {num_comments}\n")
+    f.close()
     return topic_comments_dict
 
 def plot_distribution(data, title, xlabel, ylabel, file_name):
