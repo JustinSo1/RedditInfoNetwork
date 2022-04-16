@@ -91,7 +91,9 @@ if __name__ == "__main__":
 
     # filter comments
     comments_df, num_comments_before, num_comments_after = filter_comments_df(comments_df)
-    print(f"# of comments before: {num_comments_before}\n# of comments after: {num_comments_after}")
+    f = open("comments_stats.txt", "a")
+    f.write(f"# of comments before filtering: {num_comments_before}\n# of comments after filtering: {num_comments_after}")
+    f.close()
 
     # get unique set of parent_ids
     parent_ids = set(comments_df['parent_id'])

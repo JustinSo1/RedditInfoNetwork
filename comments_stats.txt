@@ -1,0 +1,2 @@
+# of comments before filtering: 194747
+# of comments after filtering: 108079
