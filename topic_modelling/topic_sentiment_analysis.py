@@ -60,10 +60,7 @@ def get_comment_topic_distribution(df):
 
 
 def plot_distribution(data, title, xlabel, ylabel, file_name):
-    plt.bar(xlabel, ylabel, data=data)
-    plt.title(title)
-    plt.xlabel(xlabel)
-    plt.ylabel(ylabel)
+    data.plot(x=xlabel, y=ylabel, kind="bar", title=title, xlabel=xlabel, ylabel=ylabel, legend=False)
     plt.savefig(file_name)
     plt.clf()
     return
