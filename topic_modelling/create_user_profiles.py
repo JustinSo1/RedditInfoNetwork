@@ -6,6 +6,7 @@ import pandas as pd
 from gensim import corpora
 from gensim.models import LdaModel
 
+from definitions import ROOT_DIR
 from topic_modelling.user_profile_topic_modelling import get_unique_authors, filter_authors, get_all_tokens_by_user
 
 if __name__ == "__main__":
@@ -51,4 +52,4 @@ if __name__ == "__main__":
             df.at[index, 'topic'] = max(topic_probabilities, key=lambda item: item[1])
     # print(df.head())
 
-    df.to_csv("author_topic_association.csv", index=False)
+    df.to_csv(os.path.join(ROOT_DIR, "csv_data", "author_topic_association.csv"), index=False)

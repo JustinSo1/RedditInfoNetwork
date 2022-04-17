@@ -148,6 +148,6 @@ if __name__ == "__main__":
 
     # write dataframes to files
     csv_folder = "csv_data"
-    topic_authors_df.to_csv(os.path.join(csv_folder, "topic_authors_distribution.csv", index=False))
-    topic_comments_df.to_csv(os.path.join(csv_folder, "topic_comments_distribution.csv", index=False))
-    author_topic_sentiment_df.to_csv(os.path.join(csv_folder, "author_topic_sentiment.csv", index=False))
+    topic_authors_df.to_csv(os.path.join(ROOT_DIR, csv_folder, "topic_authors_distribution.csv", index=False))
+    topic_comments_df.to_csv(os.path.join(ROOT_DIR, csv_folder, "topic_comments_distribution.csv", index=False))
+    author_topic_sentiment_df.to_csv(os.path.join(ROOT_DIR, csv_folder, "author_topic_sentiment.csv", index=False))
