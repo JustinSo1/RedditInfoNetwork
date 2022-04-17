@@ -3,7 +3,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-Topic_Distribution.csv
+csv_data/Topic_Distribution.csv
 preprocessed_documents.csv
 processed_documents.csv
 
