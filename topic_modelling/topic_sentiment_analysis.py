@@ -80,41 +80,80 @@ def plot_sent_distribution(x, y_pos, y_neu, y_neg, title, xlabel, ylabel, file_n
     plt.clf()
     return
 
+
+def get_author_topic_sentiment(df):
+    # {"author": topic, score, total, avg }
+    author_topic_sentiment = {}
+    for index, row in df.iterrows():
+        if index < 10: 
+            author = row['author']
+            topic = re.split(',', str(row['topic']))[0][1:]
+            sentiment = re.split(', |\'', str(row['sentiment']))[1]
+            score = float(re.split(', |\'', str(row['sentiment']))[3][:-1])
+            # print(topic, sentiment, score)
+            # if author in author_topic_sentiment:
+            # # check if topic exists
+            #     author_topic_sentiment[author][topic]["score"] += score
+            #     author_topic_sentiment[author][topic]["total"] += 1
+            # else:
+            #     # topic doesn't exist
+            #     author_topic_sentiment = {"topic":topic, "score":score, "total":1, "avg":0}
+            # print(author_topic_sentiment)
+            # if topic != "an": # filter out "Nan" topics
+            #   if topic in topic_comments_dict:
+            #       topic_comments_dict[topic][sentiment] += 1
+            #       topic_comments_dict[topic]["total"] += 1
+            #   else:
+            #       if sentiment == "pos":
+            #           topic_comments_dict[topic] = {"pos": 1, "neu": 0, "neg": 0, "total": 1}
+            #       elif sentiment == "neu":
+            #           topic_comments_dict[topic] = {"pos": 0, "neu": 1, "neg": 0, "total": 1}
+            #       else:
+            #           topic_comments_dict[topic] = {"pos": 0, "neu": 0, "neg": 1, "total": 1}
+
+    return author_topic_sentiment
+
+
 if __name__ == "__main__":
     topic_modelling_path = os.path.join("processed_documents.csv")
     df = pd.read_csv(topic_modelling_path)
     df = df[['author', 'body', 'topic', 'sentiment']]
 
-    topic_authors_dict = get_author_topic_distribution(df)
-    topic_authors_dict_x_axis = list(topic_authors_dict.keys())
-    topic_authors_dict_y_axis = list(topic_authors_dict.values())
+    # topic_authors_dict = get_author_topic_distribution(df)
+    # topic_authors_dict_x_axis = list(topic_authors_dict.keys())
+    # topic_authors_dict_y_axis = list(topic_authors_dict.values())
 
-    # convert to dataframe to sort by total number of comments
-    topic_authors_df = pd.DataFrame({"Topics": topic_authors_dict_x_axis, "Number of Unique Authors": topic_authors_dict_y_axis})
-    topic_authors_df= topic_authors_df.sort_values("Number of Unique Authors", ascending=False)
-    # plot author vs topic distribution
-    plot_distribution(topic_authors_df, "Topics Discussed by Authors", "Topics", "Number of Unique Authors", "graphs/topic_authors.png")
+    # # convert to dataframe to sort by total number of comments
+    # topic_authors_df = pd.DataFrame({"Topics": topic_authors_dict_x_axis, "Number of Unique Authors": topic_authors_dict_y_axis})
+    # topic_authors_df= topic_authors_df.sort_values("Number of Unique Authors", ascending=False)
+    # # plot author vs topic distribution
+    # plot_distribution(topic_authors_df, "Topics Discussed by Authors", "Topics", "Number of Unique Authors", "graphs/topic_authors.png")
 
-    # comment vs topic distribution
-    topic_comments_dict = get_comment_topic_distribution(df)
+    # # comment vs topic distribution
+    # topic_comments_dict = get_comment_topic_distribution(df)
 
-    topic_comments_dict_x_axis = list(topic_comments_dict.keys())
+    # topic_comments_dict_x_axis = list(topic_comments_dict.keys())
 
-    # without sentiment
-    total_topic_comments_dict_y_axis = [x["total"] for x in list(topic_comments_dict.values())]
-    # with sentiment
-    sent_pos_topic_comments_dict_y_axis = [x["pos"] for x in list(topic_comments_dict.values())]
-    sent_neu_topic_comments_dict_y_axis = [x["neu"] for x in list(topic_comments_dict.values())]
-    sent_neg_topic_comments_dict_y_axis = [x["neg"] for x in list(topic_comments_dict.values())]
-    # convert to dataframe to sort by total number of comments
-    topic_comments_df = pd.DataFrame({"Topics": topic_comments_dict_x_axis, "Number of Comments": total_topic_comments_dict_y_axis, "Positive": sent_pos_topic_comments_dict_y_axis, "Neutral": sent_neu_topic_comments_dict_y_axis, "Negative": sent_neg_topic_comments_dict_y_axis})
-    topic_comments_df= topic_comments_df.sort_values("Number of Comments", ascending=False)
+    # # without sentiment
+    # total_topic_comments_dict_y_axis = [x["total"] for x in list(topic_comments_dict.values())]
+    # # with sentiment
+    # sent_pos_topic_comments_dict_y_axis = [x["pos"] for x in list(topic_comments_dict.values())]
+    # sent_neu_topic_comments_dict_y_axis = [x["neu"] for x in list(topic_comments_dict.values())]
+    # sent_neg_topic_comments_dict_y_axis = [x["neg"] for x in list(topic_comments_dict.values())]
+    # # convert to dataframe to sort by total number of comments
+    # topic_comments_df = pd.DataFrame({"Topics": topic_comments_dict_x_axis, "Number of Comments": total_topic_comments_dict_y_axis, "Positive": sent_pos_topic_comments_dict_y_axis, "Neutral": sent_neu_topic_comments_dict_y_axis, "Negative": sent_neg_topic_comments_dict_y_axis})
+    # topic_comments_df= topic_comments_df.sort_values("Number of Comments", ascending=False)
 
-    # plot comment vs topic distribution without sentiment
-    plot_distribution(topic_comments_df, "Topics Discussed in Comments", "Topics", "Number of Comments", "graphs/topic_comments.png")
-    # plot comment vs topic distribution with sentiment
-    plot_sent_distribution(topic_comments_df["Topics"].tolist(), topic_comments_df["Positive"].tolist(), topic_comments_df["Neutral"].tolist(), topic_comments_df["Negative"].tolist(), "Sentiments Towards Topics Discussed in Comments", "Topics", "Number of Comments", "graphs/topic_comments_sentiment.png")
+    # # plot comment vs topic distribution without sentiment
+    # plot_distribution(topic_comments_df, "Topics Discussed in Comments", "Topics", "Number of Comments", "graphs/topic_comments.png")
+    # # plot comment vs topic distribution with sentiment
+    # plot_sent_distribution(topic_comments_df["Topics"].tolist(), topic_comments_df["Positive"].tolist(), topic_comments_df["Neutral"].tolist(), topic_comments_df["Negative"].tolist(), "Sentiments Towards Topics Discussed in Comments", "Topics", "Number of Comments", "graphs/topic_comments_sentiment.png")
+
+    # create author to topic bipartite graph
+    author_topic_sentiment_df = get_author_topic_sentiment(df)
 
     # write dataframes to files
-    topic_authors_df.to_csv("topic_authors_distribution.csv", index=False)
-    topic_comments_df.to_csv("topic_comments_distribution.csv", index=False)
+    # topic_authors_df.to_csv("topic_authors_distribution.csv", index=False)
+    # topic_comments_df.to_csv("topic_comments_distribution.csv", index=False)
+    author_topic_sentiment_df.to_csv("author_topic_sentiment.csv", index=False)
+
