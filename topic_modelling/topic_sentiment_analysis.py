@@ -1,8 +1,10 @@
 import os
+import string
 import pandas as pd
 import matplotlib.pyplot as plt
 import re
 import numpy as np
+import ast
 
 def get_author_topic_distribution(df):
     # (x, y) = {'topic': {authors}}
@@ -10,6 +12,7 @@ def get_author_topic_distribution(df):
     # x = topic, y = length of authors 
     topic_authors_dict = {}
     for index, row in df.iterrows():
+        # TODO: Remove regex stuff
         topic = re.split(',', str(row['topic']))[0][1:]
         if topic != "an": # filter out "Nan" topics
             author = row['author']
@@ -30,6 +33,7 @@ def get_comment_topic_distribution(df):
     # x = topic, y = number of comments
     topic_comments_dict = {}
     for index, row in df.iterrows():
+        # TODO: Remove regex stuff
         topic = re.split(',', str(row['topic']))[0][1:]
         sentiment = re.split(', |\'', str(row['sentiment']))[1]
         if topic != "an": # filter out "Nan" topics
@@ -80,36 +84,43 @@ def plot_sent_distribution(x, y_pos, y_neu, y_neg, title, xlabel, ylabel, file_n
     plt.clf()
     return
 
-
+# TODO: Refactor this function/remove regex stuff after re-formatting processed_documents.csv
 def get_author_topic_sentiment(df):
     # {"author": topic, score, total, avg }
-    author_topic_sentiment = {}
+    df_topic = tuple(list(df['topic']))
+    print(type(ast.literal_eval(df_topic[0])[0]))
+
+    author_topic_sentiment = pd.DataFrame({"Author", "Topic", "Avg_Score"})
+    df['topic'] = df['topic'].apply(lambda x: ast.literal_eval(str(x)) if x else "")
+
     for index, row in df.iterrows():
         if index < 10: 
             author = row['author']
-            topic = re.split(',', str(row['topic']))[0][1:]
+            topic = row['topic'][0]
+            # topic = re.split(',', str(row['topic']))[0][1:]
             sentiment = re.split(', |\'', str(row['sentiment']))[1]
             score = float(re.split(', |\'', str(row['sentiment']))[3][:-1])
-            # print(topic, sentiment, score)
-            # if author in author_topic_sentiment:
-            # # check if topic exists
-            #     author_topic_sentiment[author][topic]["score"] += score
-            #     author_topic_sentiment[author][topic]["total"] += 1
+
+
+            # Check if the author topic pair already exists in author_topic_sentiment
+            if (not author_topic_sentiment['author'] == author).any():
+                # Get all rows where author = author and topic = topic
+                author_to_topic_row = df.loc[df['author'] == author]
+                author_to_topic_row = author_to_topic_row.loc[df['topic'][0] == topic] # tuple == int
+
+                # Take the average score of all these rows
+                total_sentiment_score = 0
+                for _, author_row in author_to_topic_row.iterrows():
+                    sentiment = ast.literal_eval(str(author_row['sentiment']))
+                    total_sentiment_score += sentiment[1]
+
+                average_sentiment_score = total_sentiment_score / len(author_to_topic_row)
+
+                # Add the average score along with author topic pair to author_topic_sentiment
+                author_topic_sentiment = author_topic_sentiment.append({'Author': author, 'Topic': topic, 'Avg_Score': average_sentiment_score}, ignore_index = True)
+
             # else:
-            #     # topic doesn't exist
-            #     author_topic_sentiment = {"topic":topic, "score":score, "total":1, "avg":0}
-            # print(author_topic_sentiment)
-            # if topic != "an": # filter out "Nan" topics
-            #   if topic in topic_comments_dict:
-            #       topic_comments_dict[topic][sentiment] += 1
-            #       topic_comments_dict[topic]["total"] += 1
-            #   else:
-            #       if sentiment == "pos":
-            #           topic_comments_dict[topic] = {"pos": 1, "neu": 0, "neg": 0, "total": 1}
-            #       elif sentiment == "neu":
-            #           topic_comments_dict[topic] = {"pos": 0, "neu": 1, "neg": 0, "total": 1}
-            #       else:
-            #           topic_comments_dict[topic] = {"pos": 0, "neu": 0, "neg": 1, "total": 1}
+                # Pair already exists, do nothing and move on to next row in df
 
     return author_topic_sentiment
 
@@ -155,5 +166,7 @@ if __name__ == "__main__":
     # write dataframes to files
     # topic_authors_df.to_csv("topic_authors_distribution.csv", index=False)
     # topic_comments_df.to_csv("topic_comments_distribution.csv", index=False)
-    author_topic_sentiment_df.to_csv("author_topic_sentiment.csv", index=False)
+    # author_topic_sentiment_df.to_csv("author_topic_sentiment.csv", index=False)
+
+    # print(author_topic_sentiment_df)
 
