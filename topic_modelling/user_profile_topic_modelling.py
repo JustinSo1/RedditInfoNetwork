@@ -35,6 +35,12 @@ def get_all_tokens_by_user(df, user):
     return all_tokens_by_user['tokens'].tolist()
 
 
+def get_comment_topic(tokens):
+    # author_tokens = get_all_tokens_by_user(df, user)
+
+    return topic_modelling(tokens, num_topics=3, passes=4)
+
+
 if __name__ == "__main__":
     filename = os.path.join("../comment_data", "coronavirus_all_comments.csv")
     documents = extract_documents(filename)
