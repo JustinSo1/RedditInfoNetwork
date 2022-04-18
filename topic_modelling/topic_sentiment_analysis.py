@@ -43,11 +43,23 @@ def get_comment_topic_distribution(df):
 def save_comments_stats(topic_comments_dict, filename):
     # write number of comments to stats file
     num_comments = sum(score['total'] for score in topic_comments_dict.values())
-    # TODO: change this "a" to something that won't continuously append everytime we run the
-    #  function but not overwrite the file
-    f = open(filename, "a")
-    f.write(f"\n# of comments with topic: {num_comments}")
-    f.close()
+    num_comments_dict = {'Statistics':['With topics'],'Number of comments':[num_comments]}
+
+    if os.path.exists(filename):
+        # read existing csv file
+        df = pd.read_csv(filename)
+        if (df['Statistics'] == 'With topics').any():
+            # update data
+            df.loc[df.loc[df['Statistics'] == 'With topics'].index[0], 'Number of comments'] = num_comments
+        else:
+            # add data
+            df = pd.concat([df, pd.DataFrame(num_comments_dict)], ignore_index=True)
+    else:
+        # create csv file if file doesn't exist
+        df = pd.DataFrame(num_comments_dict)
+      
+    # writing into the file
+    df.to_csv(filename, index=False)
 
 
 def plot_distribution(data, title, xlabel, ylabel, file_name):
