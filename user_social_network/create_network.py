@@ -83,6 +83,30 @@ def get_df():
 
     return comments_df, submissions_df
 
+def save_comments_stats(filename, num_comments_before, num_comments_after):
+    # write number of comments to stats file
+    before_after_dict = {'Statistics':['Before filtering', 'After filtering'],'Number of comments':[num_comments_before, num_comments_after]}
+    before_row_dict = {'Statistics':['Before filtering'], 'Number of comments': [num_comments_before]}
+    after_row_dict = {'Statistics':['After filtering'], 'Number of comments': [num_comments_after]}
+
+    if os.path.exists(filename):
+        # read existing csv file
+        df = pd.read_csv(filename)
+        if (df['Statistics'] == 'Before filtering').any() and (df['Statistics'] == 'After filtering').any():
+            # update data
+            df.loc[df.loc[df['Statistics'] == 'Before filtering'].index[0], 'Number of comments'] = num_comments_before
+            df.loc[df.loc[df['Statistics'] == 'After filtering'].index[0], 'Number of comments'] = num_comments_after
+        else:
+            # add data
+            df = pd.concat([df, pd.DataFrame(before_row_dict)], ignore_index=True)
+            df = pd.concat([df, pd.DataFrame(after_row_dict)], ignore_index=True)
+    else:
+        # create csv file if file doesn't exist
+        df = pd.DataFrame(before_after_dict)
+      
+    # writing into the file
+    df.to_csv(filename, index=False)
+      
 
 if __name__ == "__main__":
     # get 'Comments Data frame' and 'Submissions Data frame'
@@ -91,10 +115,9 @@ if __name__ == "__main__":
 
     # filter comments
     comments_df, num_comments_before, num_comments_after = filter_comments_df(comments_df)
-    f = open("comments_stats.txt", "a")
-    f.write(f"# of comments before filtering: {num_comments_before}\n# of comments after filtering: {num_comments_after}")
-    f.close()
-
+    # save comment statistics
+    save_comments_stats('comments_stats.csv', num_comments_before, num_comments_after)
+    
     # get unique set of parent_ids
     parent_ids = set(comments_df['parent_id'])
 
