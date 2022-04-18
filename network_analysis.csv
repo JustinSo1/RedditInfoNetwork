@@ -1,9 +1,9 @@
 All Components
-Num of Nodes,Num of Edges,Global Clustering Coefficient
-3358,3625,0.008768252972526912
+Num of Nodes,Num of Edges,Num of Interactions,Global Clustering Coefficient
+24072,29779,6652.0,0.004370741904823491
 Weakly Connected Component
-Num of Nodes,Num of Edges,Average Shortest Path
-2817,3251,0.02371533828702359
+Num of Nodes,Num of Edges,Num of Interactions,Average Shortest Path
+18550,26306,6652.0,1.3940155098777494
 Strongly Connected Component
-Num of Nodes,Num of Edges,Diameter
-17,32,6
+Num of Nodes,Num of Edges,Num of Interactions,Diameter
+2708,6251,6652.0,23
