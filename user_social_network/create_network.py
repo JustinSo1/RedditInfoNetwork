@@ -165,10 +165,11 @@ if __name__ == "__main__":
     print("Creating bipartite graph...")
     user_to_topic_graph, set1_nodes, set2_nodes = create_bipartite_graph(df)
     print("Bipartite Graph created!")
-    # TODO: refactor drawing into method
-    nx.draw_networkx(user_to_topic_graph,
+    # TODO: refactor drawing into method and make better image
+    plt.figure(figsize=(150, 150), dpi=50)
+    nx.draw_networkx(user_to_topic_graph, node_size=300,
                      pos=nx.drawing.bipartite_layout(user_to_topic_graph, set1_nodes))
-    plt.savefig(os.path.join(ROOT_DIR, "graphs", "user_to_topic_graph.png"))
+    plt.savefig(os.path.join(ROOT_DIR, "graphs", "user_to_topic_graph.png"), bbox_inches='tight')
     print("Saving Bipartite graph...")
     save_graph(user_to_topic_graph, "user_to_topic")
     print("Bipartite graph saved!")
