@@ -96,13 +96,13 @@ def filter_comments_df(comments_df):
 
 
 def get_df():
-    comments_path = os.path.join("coronavirus_comments.csv")
+    comments_path = os.path.join(ROOT_DIR, "coronavirus_comments.csv")
     comments_df = pd.read_csv(comments_path,
                               dtype={"author": "string", "id": "string", "link_id": "string", "parent_id": "string",
                                      "body": "string"})
     comments_df = comments_df[['author', 'id', 'link_id', 'parent_id', 'body']]
 
-    submissions_path = os.path.join("coronavirus_submission.csv")
+    submissions_path = os.path.join(ROOT_DIR, "coronavirus_submission.csv")
     submissions_df = pd.read_csv(submissions_path, dtype={"author": "string", "id": "string"})
     submissions_df = submissions_df[['author', 'id']]
 
