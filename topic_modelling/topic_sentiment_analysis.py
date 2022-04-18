@@ -43,7 +43,7 @@ def get_comment_topic_distribution(df):
 def save_comments_stats(topic_comments_dict, filename):
     # write number of comments to stats file
     num_comments = sum(score['total'] for score in topic_comments_dict.values())
-    num_comments_dict = {'Statistics':['With topics'],'Number of comments':[num_comments]}
+    num_comments_dict = {'Statistics': ['With topics'], 'Number of comments': [num_comments]}
 
     if os.path.exists(filename):
         # read existing csv file
@@ -57,7 +57,7 @@ def save_comments_stats(topic_comments_dict, filename):
     else:
         # create csv file if file doesn't exist
         df = pd.DataFrame(num_comments_dict)
-      
+
     # writing into the file
     df.to_csv(filename, index=False)
 
