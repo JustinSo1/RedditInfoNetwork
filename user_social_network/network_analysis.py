@@ -163,7 +163,7 @@ def get_diameter(graph):
 
 if __name__ == "__main__":
     # get graph from json file
-    graph = get_graph()
+    graph = get_graph("user_social_network")
 
     # run network analysis
     print("Analyzing network...")
