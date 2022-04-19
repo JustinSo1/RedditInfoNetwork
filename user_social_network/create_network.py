@@ -72,12 +72,12 @@ def create_edges(graph, parent_row, child_rows):
             comments.append(child_comment)
 
 
-def draw_graph(graph):
+def draw_graph(graph, filename):
     plt.figure(figsize=(150, 150), dpi=50)
     weights = [float(f"{graph[u][v]['weight']}") for u, v in graph.edges()]
     nx.draw(graph, node_size=300, width=weights)
     plt.show()
-    plt.savefig("graphs/graph.png", bbox_inches='tight')
+    plt.savefig(os.path.join(ROOT_DIR, "graphs", filename), bbox_inches='tight')
     plt.clf()  # clear canvas to show most recent graph
     plt.figure(figsize=(8.0, 6.0), dpi=80)  # reset to default size
 
@@ -93,6 +93,12 @@ def filter_comments_df(comments_df):
     comments_df = comments_df.drop_duplicates(subset=['body'], keep='first')
     num_comments_after = len(comments_df)
     return comments_df, num_comments_before, num_comments_after
+
+
+def filter_submissions_df(df):
+    df = df[~df.author.isin(['[deleted]', 'AutoModerator'])]
+    df = df.reset_index(drop=True)
+    return df
 
 
 def get_df():
@@ -142,18 +148,19 @@ if __name__ == "__main__":
 
     # filter comments
     comments_df, num_comments_before, num_comments_after = filter_comments_df(comments_df)
+    submissions_df = filter_submissions_df(submissions_df)
     # save comment statistics
-    save_comments_stats('comments_stats.csv', num_comments_before, num_comments_after)
+    # save_comments_stats('comments_stats.csv', num_comments_before, num_comments_after)
 
-    print("Creating edges...")
+    print("Creating graph...")
     user_social_network_graph = create_graph(comments_df, submissions_df)
-    print("Edges created!")
+    print("Graph created!")
 
     # draw and show graph after adding edges
     # (can skip this step after running it once to save time)
-    print("Creating graph...")
-    draw_graph(user_social_network_graph)
-    print("Graph created!")
+    print("Drawing graph...")
+    draw_graph(user_social_network_graph, "user_social_network.png")
+    print("Graph drew!")
 
     print("Saving graph...")
     # save graph in file

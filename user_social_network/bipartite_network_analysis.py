@@ -1,17 +1,20 @@
+import os
+
 import networkx as nx
 import pandas as pd
-from sympy import N, degree, erfinv
 
 from created_network import get_graph
-from networkx.algorithms import bipartite
-
+from definitions import ROOT_DIR
 from sentiment_analysis import get_polarity
+
 
 def get_top_n_degree_centralities(G, n):
     degree_centralities = nx.degree_centrality(G)
-    degree_centralities = {node: centrality for node, centrality in sorted(degree_centralities.items(), key=lambda item: item[1], reverse=True)[:n]}
+    degree_centralities = {node: centrality for node, centrality in
+                           sorted(degree_centralities.items(), key=lambda item: item[1], reverse=True)[:n]}
 
     return degree_centralities
+
 
 # Only keep the users from network that are in bipartite
 def filter_users(network, bipartite):
@@ -24,6 +27,7 @@ def filter_users(network, bipartite):
     network.remove_nodes_from(nodes_to_remove)
 
     return network
+
 
 # Return a df showing authors that share a common topic and their sentiments
 # {author1, author2, common_topic, sentiment1, sentiment2}
@@ -46,19 +50,22 @@ def get_common_topics(degree_centralities, user_social_network, user_to_topic):
                     author_sentiment = get_polarity(user_to_topic.get_edge_data(author, topic)['avg_score'])
                     neighbour_sentiment = get_polarity(user_to_topic.get_edge_data(neighbour, topic)['avg_score'])
                     author_common_topic_pairs.append([author, neighbour, topic, author_sentiment, neighbour_sentiment])
-    
-    author_common_topic_pairs_df = pd.DataFrame(author_common_topic_pairs, columns=["author1", "author2", "common_topic", "sentiment1", "sentiment2"])
+
+    author_common_topic_pairs_df = pd.DataFrame(author_common_topic_pairs,
+                                                columns=["author1", "author2", "common_topic", "sentiment1",
+                                                         "sentiment2"])
 
     return author_common_topic_pairs_df
 
+
 if __name__ == "__main__":
-    user_social_network = get_graph("user_social_network")
-    user_to_topic = get_graph("user_to_topic")
+    user_social_network = get_graph(os.path.join(ROOT_DIR, "graph_data", "user_social_network"))
+    user_to_topic = get_graph(os.path.join(ROOT_DIR, "graph_data", "user_to_topic"))
 
     filtered_network_graph = filter_users(user_social_network, user_to_topic)
-    print(len(filtered_network_graph))
+    print(len(filtered_network_graph))  # 23163
     degree_centralities = get_top_n_degree_centralities(filtered_network_graph, len(filtered_network_graph))
 
     common_topics = get_common_topics(degree_centralities, user_social_network, user_to_topic)
-    common_topics.to_csv("author_common_topic_pairs.csv", index=False)
-    print(len(common_topics))
+    common_topics.to_csv(os.path.join(ROOT_DIR, "csv_data", "author_common_topic_pairs.csv"), index=False)
+    print(len(common_topics))  # 35495
