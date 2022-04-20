@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 
 from definitions import ROOT_DIR
-from topic_modelling.user_profile_topic_modelling import get_unique_authors, filter_authors
+from topic_modelling_sentiment_analysis.user_profile_topic_modelling import get_unique_authors, filter_authors
 
 
 def get_author_topic_distribution(df):
@@ -63,7 +63,7 @@ def save_comments_stats(topic_comments_dict, filename):
 
 
 def plot_distribution(data, title, xlabel, ylabel, file_name):
-    data.plot(x=xlabel, y=ylabel, kind="bar", title=title, xlabel=xlabel, ylabel=ylabel, legend=False, rot=0)
+    data.plot(x=xlabel, y=ylabel, kind="bar", title=title, xlabel=xlabel, ylabel=ylabel, legend=False, rot=0, logy=True)
     plt.savefig(file_name)
     plt.clf()
     return
@@ -72,9 +72,9 @@ def plot_distribution(data, title, xlabel, ylabel, file_name):
 def plot_sent_distribution(x, y_pos, y_neu, y_neg, title, xlabel, ylabel, file_name):
     width = 0.25
     x_axis = np.arange(len(x))
-    plt.bar(x_axis - width, y_pos, width=width, label="Positive", color="green")
-    plt.bar(x_axis, y_neu, width=width, label="Neutral", color="blue")
-    plt.bar(x_axis + width, y_neg, width=width, label="Negative", color="red")
+    plt.bar(x_axis - width, y_pos, width=width, label="Positive", color="green", log=True)
+    plt.bar(x_axis, y_neu, width=width, label="Neutral", color="blue", log=True)
+    plt.bar(x_axis + width, y_neg, width=width, label="Negative", color="red", log=True)
     plt.xticks(x_axis + width / 3, x)
     plt.title(title)
     plt.xlabel(xlabel)
@@ -160,6 +160,6 @@ if __name__ == "__main__":
 
     # write dataframes to files
     csv_folder = "csv_data"
-    topic_authors_df.to_csv(os.path.join(ROOT_DIR, csv_folder, "topic_authors_distribution.csv", index=False))
-    topic_comments_df.to_csv(os.path.join(ROOT_DIR, csv_folder, "topic_comments_distribution.csv", index=False))
-    author_topic_sentiment_df.to_csv(os.path.join(ROOT_DIR, csv_folder, "author_topic_sentiment.csv", index=False))
+    topic_authors_df.to_csv(os.path.join(ROOT_DIR, csv_folder, "topic_authors_distribution.csv"), index=False)
+    topic_comments_df.to_csv(os.path.join(ROOT_DIR, csv_folder, "topic_comments_distribution.csv"), index=False)
+    author_topic_sentiment_df.to_csv(os.path.join(ROOT_DIR, csv_folder, "author_topic_sentiment.csv"), index=False)
