@@ -3,6 +3,7 @@ from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 
 import pandas as pd
 
+
 def get_polarity(compound_score, threshold=0.05):
     """
     positive sentiment: compound score >= 0.05
@@ -16,11 +17,13 @@ def get_polarity(compound_score, threshold=0.05):
     else:  # <= -threshold
         return "neg"
 
+
 def get_sentiment(text, analyzer):
     threshold = 0.05
     vs = analyzer.polarity_scores(text)
     compound_score = vs['compound']
     return get_polarity(compound_score, threshold), compound_score
+
 
 if __name__ == "__main__":
     filename = os.path.join("processed_documents.csv")

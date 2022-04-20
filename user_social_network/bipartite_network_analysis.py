@@ -5,7 +5,7 @@ import pandas as pd
 
 from created_network import get_graph
 from definitions import ROOT_DIR
-from sentiment_analysis import get_polarity
+from topic_modelling.sentiment_analysis import get_polarity
 
 
 def get_top_n_degree_centralities(G, n):

@@ -13,5 +13,5 @@ if __name__ == "__main__":
     for index, topic in all_users_lda_model.show_topics(num_topics=all_users_lda_model.num_topics, formatted=False):
         topic_words.append(f'Topic: {index}\nWords: {[w[0] for w in topic]}')
 
-    with open(os.path.join(ROOT_DIR, "topic_modelling", "lda_topics.txt"), "w") as log_file:
+    with open(os.path.join(ROOT_DIR, "topic_modelling_sentiment_analysis", "lda_topics.txt"), "w") as log_file:
         pprint(topic_words, log_file)
