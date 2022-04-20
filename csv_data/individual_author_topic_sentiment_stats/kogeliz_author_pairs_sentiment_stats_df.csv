@@ -1,0 +1,4 @@
+topic,pos_pos,neg_neg,neu_neu,pos_neg,pos_neu,neg_neu,total,avg_pos_pos,avg_neg_neg,avg_neu_neu,avg_pos_neg,avg_pos_neu,avg_neg_neu
+13,3,0,0,1,0,0,4,75.0,0.0,0.0,25.0,0.0,0.0
+2,0,0,0,1,0,0,1,0.0,0.0,0.0,100.0,0.0,0.0
+0,0,0,0,0,2,3,5,0.0,0.0,0.0,0.0,40.0,60.0
