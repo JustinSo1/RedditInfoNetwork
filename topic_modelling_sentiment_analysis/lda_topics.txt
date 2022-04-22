@@ -1,0 +1,45 @@
+['Topic: 0\n'
+ "Words: ['say', 'us', 'gt', 'country', 'would', 'government', 'make', 'one', "
+ "'trump', 'world']",
+ 'Topic: 1\n'
+ "Words: ['money', 'buy', 'use', 'food', 'cost', 'pay', 'make', 'sell', 'air', "
+ "'profit']",
+ 'Topic: 2\n'
+ "Words: ['number', 'death', 'case', 'report', 'data', 'high', 'italy', "
+ "'state', 'low', 'count']",
+ 'Topic: 3\n'
+ "Words: ['china', 'post', 'chinese', 'reddit', 'sub', 'comment', 'india', "
+ "'ban', 'wuhan', 'read']",
+ 'Topic: 4\n'
+ "Words: ['perfect', 'billion', 'temperature', 'fat', 'loss', 'anxiety', "
+ "'republicans', 'hot', 'pain', 'trigger']",
+ 'Topic: 5\n'
+ "Words: ['people', 'think', 'virus', 'would', 'die', 'know', 'get', 'covid', "
+ "'like', 'bad']",
+ 'Topic: 6\n'
+ "Words: ['panic', 'prepare', 'mom', 'flight', 'stock', 'yup', 'buy', "
+ "'market', 'fix', 'convince']",
+ 'Topic: 7\n'
+ "Words: ['mask', 'wear_mask', 'wear', 'use', 'protect', 'filter', "
+ "'recommend', 'dog', 'donate', 'freedom']",
+ 'Topic: 8\n'
+ "Words: ['dont', 'thats', 'im', 'god', 'church', 'industry', 'cant', 'yea', "
+ "'didnt', 'illegal']",
+ 'Topic: 9\n'
+ "Words: ['study', 'patient', 'article', 'research', 'sweden', 'link', 'drug', "
+ "'use', 'trial', 'paper']",
+ 'Topic: 10\n'
+ "Words: ['fuck', 'lol', 'guy', 'shit', 'fucking', 'man', 'thanks', 'trump', "
+ "'america', 'lmao']",
+ 'Topic: 11\n'
+ "Words: ['test', 'flu', 'ventilator', 'symptom', 'percent', 'nyc', 'testing', "
+ "'confirmed_case', 'people', 'rate']",
+ 'Topic: 12\n'
+ "Words: ['test', 'case', 'also', 'virus', 'infection', 'may', 'hospital', "
+ "'symptom', 'patient', 'infect']",
+ 'Topic: 13\n'
+ "Words: ['get', 'go', 'people', 'work', 'like', 'one', 'time', 'know', "
+ "'want', 'day']",
+ 'Topic: 14\n'
+ "Words: ['lockdown', 'protest', 'week', 'state', 'florida', 'case', "
+ "'increase', 'day', 'spike', 'peak']"]
