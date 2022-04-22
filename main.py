@@ -3,7 +3,7 @@ import os
 
 import pandas as pd
 
-from data_collection import DataCollection
+from data_collection.data_collection import DataCollection
 from definitions import ROOT_DIR
 
 if __name__ == '__main__':
@@ -30,4 +30,4 @@ if __name__ == '__main__':
 
     comments_df = pd.DataFrame(comments_list)
 
-    comments_df.to_csv("coronavirus_comments.csv", header=True, index=False, columns=list(comments_df.axes[1]))
+    comments_df.to_csv(ROOT_DIR + "/data_collection/coronavirus_comments.csv", header=True, index=False, columns=list(comments_df.axes[1]))

@@ -102,13 +102,13 @@ def filter_submissions_df(df):
 
 
 def get_df():
-    comments_path = os.path.join(ROOT_DIR, "coronavirus_comments.csv")
+    comments_path = os.path.join(ROOT_DIR, "data_collection", "coronavirus_comments.csv")
     comments_df = pd.read_csv(comments_path,
                               dtype={"author": "string", "id": "string", "link_id": "string", "parent_id": "string",
                                      "body": "string"})
     comments_df = comments_df[['author', 'id', 'link_id', 'parent_id', 'body']]
 
-    submissions_path = os.path.join(ROOT_DIR, "coronavirus_submissions.csv")
+    submissions_path = os.path.join(ROOT_DIR, "data_collection", "coronavirus_submissions.csv")
     submissions_df = pd.read_csv(submissions_path, dtype={"author": "string", "id": "string"})
     submissions_df = submissions_df[['author', 'id']]
 
@@ -150,7 +150,7 @@ if __name__ == "__main__":
     comments_df, num_comments_before, num_comments_after = filter_comments_df(comments_df)
     submissions_df = filter_submissions_df(submissions_df)
     # save comment statistics
-    # save_comments_stats('comments_stats.csv', num_comments_before, num_comments_after)
+    save_comments_stats(ROOT_DIR + "/csv_data/comments_stats.csv", num_comments_before, num_comments_after)
 
     print("Creating graph...")
     user_social_network_graph = create_graph(comments_df, submissions_df)
@@ -159,12 +159,12 @@ if __name__ == "__main__":
     # draw and show graph after adding edges
     # (can skip this step after running it once to save time)
     print("Drawing graph...")
-    draw_graph(user_social_network_graph, "network_creation.png")
+    draw_graph(user_social_network_graph, "user_social_network_graph.png")
     print("Graph drew!")
 
     print("Saving graph...")
     # save graph in file
-    save_graph(user_social_network_graph, "network_creation")
+    save_graph(user_social_network_graph, "user_social_network")
     print("Graph saved!")
 
     df = pd.read_csv(os.path.join(ROOT_DIR, "csv_data", "author_topic_sentiment.csv"),

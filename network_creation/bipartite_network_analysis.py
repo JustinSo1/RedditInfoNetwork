@@ -59,7 +59,7 @@ def get_common_topics(degree_centralities, user_social_network, user_to_topic):
 
 
 if __name__ == "__main__":
-    user_social_network = get_graph(os.path.join(ROOT_DIR, "graph_data", "network_creation"))
+    user_social_network = get_graph(os.path.join(ROOT_DIR, "graph_data", "user_social_network"))
     user_to_topic = get_graph(os.path.join(ROOT_DIR, "graph_data", "user_to_topic"))
 
     filtered_network_graph = filter_users(user_social_network, user_to_topic)

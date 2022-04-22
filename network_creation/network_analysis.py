@@ -1,7 +1,9 @@
+import os
 import csv
 import matplotlib.pyplot as plt
 import networkx as nx
 from created_network import get_graph
+from definitions import ROOT_DIR
 
 def get_network_analysis(graph):
     # of nodes, # of edges and # of interactions for graph
@@ -27,8 +29,8 @@ def get_network_analysis(graph):
     num_nodes_scc, num_edges_scc, num_interactions = get_num_nodes_edges_interactions(scc_graph)
     # Diameter
     dia = get_diameter(scc_graph)
-
-    with open('network_analysis.csv', 'w', newline='') as csvfile:
+    file_path = os.path.join(ROOT_DIR, "csv_data", "network_analysis.csv")
+    with open(file_path, 'w', newline='') as csvfile:
         writer = csv.writer(csvfile)
         component_type = ['All Components', 'Weakly Connected Component', 'Strongly Connected Component']
 
@@ -82,17 +84,17 @@ def get_node_degree_distribution(graph):
     # all degrees
     d = [k for n, k in graph.degree(weight='weight')]
     create_graph_analysis(get_x_axis_values(d), get_y_axis_values(d), "Degree Distribution", "Degree, k", "Count, Nk",
-                          "graphs/dd_all.png")
+                          ROOT_DIR + "/graphs/dd_all.png")
 
     # in-degrees
     ind = [k for n, k in graph.in_degree(weight='weight')]
     create_graph_analysis(get_x_axis_values(ind), get_y_axis_values(ind), "In Degree Distribution", "In Degree, k",
-                          "Count, Nk", "graphs/dd_in.png")
+                          "Count, Nk", ROOT_DIR + "/graphs/dd_in.png")
 
     # out-degrees
     outd = [k for n, k in graph.out_degree(weight='weight')]
     create_graph_analysis(get_x_axis_values(outd), get_y_axis_values(outd), "Out Degree Distribution", "Out Degree, k",
-                          "Count, Nk", "graphs/dd_out.png")
+                          "Count, Nk", ROOT_DIR + "/graphs/dd_out.png")
 
     plt.scatter(get_x_axis_values(ind), get_y_axis_values(ind), label="In-degree Distribution")
     plt.scatter(get_x_axis_values(outd), get_y_axis_values(outd), label="Out-degree Distribution")
@@ -101,7 +103,7 @@ def get_node_degree_distribution(graph):
     plt.title("In/Out Degree Distribution")
     plt.xlabel("Degree, k")
     plt.ylabel("Count, Nk")
-    plt.savefig("graphs/dd_in_out")
+    plt.savefig(ROOT_DIR + "/graphs/dd_in_out")
     plt.clf()
 
 
@@ -116,7 +118,7 @@ def get_weakly_connected_component(graph):
     # count size of subgraphs
     sizes = [g.number_of_nodes() for g in subgraphs]
     create_graph_analysis(get_x_axis_values(sizes), get_y_axis_values(sizes), "Connectivity",
-                          "Weakly connected component size", "Count", "graphs/wcc.png")
+                          "Weakly connected component size", "Count", ROOT_DIR + "/graphs/wcc.png")
     # return largest weakly connected component
     return largest_wcc
 
@@ -131,7 +133,7 @@ def get_clustering_coefficient(graph):
     # get clustering coefficient and degree for each node in graph
     d = [k for n, k in graph.degree(weight='weight')]
     cc = [v for n, v in nx.clustering(graph, weight='weight').items()]
-    create_graph_analysis(d, cc, "Clustering", "Degree, k", "Clustering coefficient, c", "graphs/cc.png")
+    create_graph_analysis(d, cc, "Clustering", "Degree, k", "Clustering coefficient, c", ROOT_DIR + "/graphs/cc.png")
 
     # calculate global clustering coefficient (average)
     avg_cc = nx.average_clustering(graph)
@@ -146,7 +148,7 @@ def plot_shortest_path_length(graph):
         for p in paths:
             lengths.append(paths[p])
     create_graph_analysis(get_x_axis_values(lengths), get_y_axis_values(lengths), "Shortest Path",
-                          "Shortest Path Length", "Count", "graphs/sp.png")
+                          "Shortest Path Length", "Count", ROOT_DIR + "/graphs/sp.png")
 
 
 def get_avg_shortest_path_length(graph):
@@ -163,7 +165,7 @@ def get_diameter(graph):
 
 if __name__ == "__main__":
     # get graph from json file
-    graph = get_graph("network_creation")
+    graph = get_graph(os.path.join(ROOT_DIR, "graph_data", "user_social_network"))
 
     # run network analysis
     print("Analyzing network...")
