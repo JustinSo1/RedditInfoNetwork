@@ -108,7 +108,7 @@ def get_df():
                                      "body": "string"})
     comments_df = comments_df[['author', 'id', 'link_id', 'parent_id', 'body']]
 
-    submissions_path = os.path.join(ROOT_DIR, "coronavirus_submission.csv")
+    submissions_path = os.path.join(ROOT_DIR, "coronavirus_submissions.csv")
     submissions_df = pd.read_csv(submissions_path, dtype={"author": "string", "id": "string"})
     submissions_df = submissions_df[['author', 'id']]
 
