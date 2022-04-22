@@ -1,3 +1,0 @@
-# of comments before filtering: 194747
-# of comments after filtering: 108079
-# of comments with topic: 107254

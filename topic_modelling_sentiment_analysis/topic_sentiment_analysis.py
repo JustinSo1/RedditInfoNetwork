@@ -130,7 +130,7 @@ if __name__ == "__main__":
 
     # comment vs topic distribution
     topic_comments_dict = get_comment_topic_distribution(df)
-    # save_comments_stats(topic_comments_dict, os.path.join(ROOT_DIR, "comments_stats.txt"))
+    save_comments_stats(topic_comments_dict, os.path.join(ROOT_DIR, "/csv_data/comments_stats.csv"))
     topic_comments_dict_x_axis = list(topic_comments_dict.keys())
 
     # without sentiment
